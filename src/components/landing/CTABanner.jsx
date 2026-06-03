@@ -26,7 +26,7 @@ export default function CTABanner() {
 
           {/* CTA */}
           <a
-            href="/pages/register.html"
+            href="https://app.expovix.com/register"
             className="inline-flex items-center gap-2 px-10 py-4 rounded-full bg-[#FF5F29] hover:bg-[#e54f1f] text-white font-inter font-bold text-[15px] transition-all duration-200 shadow-lg shadow-[#FF5F29]/25 group">
             
             Start Free Trial

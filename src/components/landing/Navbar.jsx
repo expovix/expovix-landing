@@ -48,7 +48,7 @@ export default function Navbar() {
         {/* CTA */}
         <div className="hidden md:flex">
           <a
-            href="/pages/register.html"
+            href="https://app.expovix.com/register"
             className="px-7 py-2.5 rounded-full bg-[#FF5F29] hover:bg-[#e54f1f] text-white font-inter font-semibold text-[14px] transition-all duration-200">
             Get Started
           </a>
@@ -71,7 +71,7 @@ export default function Navbar() {
               {l.label}
             </button>
         )}
-          <a href="/pages/register.html" className="block text-center py-3 rounded-full bg-[#FF5F29] text-white font-inter font-semibold text-[14px]">
+          <a href="https://app.expovix.com/register" className="block text-center py-3 rounded-full bg-[#FF5F29] text-white font-inter font-semibold text-[14px]">
             Get Started
           </a>
         </div>

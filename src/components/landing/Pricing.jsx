@@ -72,7 +72,7 @@ export default function Pricing() {
                   <span className="text-[13px] font-inter text-gray-400 ml-1">{plan.period}</span>
                 </div>
                 <a
-                href="/pages/register.html"
+                href="https://app.expovix.com/register"
                 className={`mt-6 block w-full py-3.5 rounded-full text-center text-[14px] font-inter font-bold transition-all duration-200 ${
                 plan.highlighted ?
                 "bg-[#FF5F29] hover:bg-[#e54f1f] text-white shadow-lg shadow-[#FF5F29]/20" :
