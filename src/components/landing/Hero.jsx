@@ -57,7 +57,7 @@ export default function Hero() {
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
-            href="/pages/register.html"
+            href="https://app.expovix.com/register"
             className="px-8 py-3.5 rounded-full bg-[#FF5F29] hover:bg-[#e54f1f] text-white font-inter font-bold text-[15px] transition-all duration-200 shadow-lg shadow-[#FF5F29]/25">
             
             Start Free Trial
