@@ -71,8 +71,8 @@ export default function Pricing() {
                   <span className="font-inter font-black text-[48px] text-[#0D0D0D] tabular-nums tracking-[-0.04em] leading-none">{plan.price}</span>
                   <span className="text-[13px] font-inter text-gray-400 ml-1">{plan.period}</span>
                 </div>
-                <Link
-                to="/register"
+                <a
+                href="/pages/register.html"
                 className={`mt-6 block w-full py-3.5 rounded-full text-center text-[14px] font-inter font-bold transition-all duration-200 ${
                 plan.highlighted ?
                 "bg-[#FF5F29] hover:bg-[#e54f1f] text-white shadow-lg shadow-[#FF5F29]/20" :
@@ -80,7 +80,7 @@ export default function Pricing() {
                 }>
                 
                   {plan.cta}
-                </Link>
+                </a>
               </div>
 
               <div className="mt-7 pt-6 border-t border-gray-100 flex-1">

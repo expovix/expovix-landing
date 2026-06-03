@@ -25,15 +25,15 @@ export default function CTABanner() {
           </p>
 
           {/* CTA */}
-          <Link
-            to="/register"
+          <a
+            href="/pages/register.html"
             className="inline-flex items-center gap-2 px-10 py-4 rounded-full bg-[#FF5F29] hover:bg-[#e54f1f] text-white font-inter font-bold text-[15px] transition-all duration-200 shadow-lg shadow-[#FF5F29]/25 group">
             
             Start Free Trial
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="transition-transform duration-200 group-hover:translate-x-0.5">
               <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </Link>
+          </a>
 
           <p className="mt-4 text-[12px] font-inter text-gray-400">
             Join event organizers worldwide · 14-day free trial
