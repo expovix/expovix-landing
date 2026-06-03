@@ -219,7 +219,7 @@ export default function BoothTypes() {
                   ))}
                 </div>
                 <a
-                  href="/pages/register.html"
+                  href="https://expovix.com/register"
                   className="flex items-center gap-2 text-[13px] font-inter font-bold transition-all duration-200 group"
                   style={{ color: booth.accent }}
                 >
