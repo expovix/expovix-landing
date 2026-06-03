@@ -16,10 +16,16 @@ export default function Navbar() {
         {/* Logo */}
         <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center">
           <img
-            src="https://media.base44.com/images/public/6a18c428c4c5db3afaab651b/27eb21e5e_AppIcon3.png"
+            src="/assets/expovix_primary_logo_transparent.png"
             alt="ExpoVix"
             className="object-contain"
-            style={{ height: 140, width: 140 }} />
+            style={{ height: 140, width: 140 }}
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'inline';
+            }}
+          />
+          <span style={{display: 'none', fontFamily: 'Inter,sans-serif', fontWeight: 900, fontSize: '24px', color: '#FF5F29'}}>ExpoVix</span>
         </Link>
 
         {/* Center Nav */}
@@ -41,11 +47,11 @@ export default function Navbar() {
 
         {/* CTA */}
         <div className="hidden md:flex">
-          <Link
-            to="/register"
+          <a
+            href="/pages/register.html"
             className="px-7 py-2.5 rounded-full bg-[#FF5F29] hover:bg-[#e54f1f] text-white font-inter font-semibold text-[14px] transition-all duration-200">
             Get Started
-          </Link>
+          </a>
         </div>
 
         <button className="md:hidden text-[#0D0D0D]" onClick={() => setOpen(!open)}>
@@ -65,9 +71,9 @@ export default function Navbar() {
               {l.label}
             </button>
         )}
-          <Link to="/register" className="block text-center py-3 rounded-full bg-[#FF5F29] text-white font-inter font-semibold text-[14px]">
+          <a href="/pages/register.html" className="block text-center py-3 rounded-full bg-[#FF5F29] text-white font-inter font-semibold text-[14px]">
             Get Started
-          </Link>
+          </a>
         </div>
       }
     </nav>);

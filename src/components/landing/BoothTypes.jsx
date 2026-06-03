@@ -218,14 +218,14 @@ export default function BoothTypes() {
                     />
                   ))}
                 </div>
-                <Link
-                  to="/register"
+                <a
+                  href="/pages/register.html"
                   className="flex items-center gap-2 text-[13px] font-inter font-bold transition-all duration-200 group"
                   style={{ color: booth.accent }}
                 >
                   Book This Booth
                   <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5" />
-                </Link>
+                </a>
               </div>
             </div>
 

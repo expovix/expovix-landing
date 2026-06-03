@@ -56,12 +56,12 @@ export default function Hero() {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            to="/register"
+          <a
+            href="/pages/register.html"
             className="px-8 py-3.5 rounded-full bg-[#FF5F29] hover:bg-[#e54f1f] text-white font-inter font-bold text-[15px] transition-all duration-200 shadow-lg shadow-[#FF5F29]/25">
             
             Start Free Trial
-          </Link>
+          </a>
           <button
             onClick={() => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" })}
             className="px-8 py-3.5 rounded-full bg-white text-[#0D0D0D] font-inter font-bold text-[15px] shadow-sm hover:shadow-md transition-all duration-200">

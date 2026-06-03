@@ -13,10 +13,16 @@ export default function Footer() {
           {/* Logo */}
           <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center">
             <img
-              src="https://media.base44.com/images/public/6a18c428c4c5db3afaab651b/27eb21e5e_AppIcon3.png"
+              src="/assets/expovix_primary_logo_transparent.png"
               alt="ExpoVix"
               className="object-contain"
-              style={{ height: 140, width: 140 }} />
+              style={{ height: 140, width: 140 }}
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'inline';
+              }}
+            />
+            <span style={{display: 'none', fontFamily: 'Inter,sans-serif', fontWeight: 900, fontSize: '24px', color: '#FF5F29'}}>ExpoVix</span>
           </Link>
 
           {/* Center links */}

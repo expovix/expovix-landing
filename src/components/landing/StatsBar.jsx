@@ -1,7 +1,7 @@
 const stats = [
   { value: "500+", label: "Events Managed", desc: "across the globe" },
   { value: "50,000+", label: "Booths Booked", desc: "since launch" },
-  { value: "30%", label: "Satisfaction Rate", desc: "from organizers" },
+  { value: "98%", label: "Satisfaction Rate", desc: "from organizers" },
   { value: "50+", label: "Countries", desc: "fully supported" },
 ];
 
