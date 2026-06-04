@@ -44,16 +44,13 @@ export default function Hero() {
           <span className="text-[13px] font-inter font-medium text-[hsl(var(--foreground))]">Exhibition Booth Booking Platform</span>
         </div>
 
-        <h1 className="font-inter font-black text-[#0D0D0D] leading-[1.07] tracking-[-0.04em] text-[40px] sm:text-[52px] lg:text-[64px]">
+        <h1 className="font-inter font-black text-[#0D0D0D] leading-[1.07] tracking-[-0.04em] text-4xl md:text-5xl">
           The Smarter Way to
           <br />
           Book Exhibition Booths
         </h1>
 
-        <p className="mt-5 text-[15px] font-inter max-w-[500px] mx-auto leading-[1.72] text-[hsl(var(--foreground))]">Automate repetitive work and free your team to focus on exhibitor experience. ExpoVix keeps every event moving forward automatically.
-
-
-        </p>
+        <p className="mt-5 text-[15px] font-inter max-w-[500px] mx-auto leading-[1.72] text-[hsl(var(--foreground))]">The self-serve platform exhibition organizers use to manage booths, bookings, and floor plans — without the enterprise price tag.</p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
@@ -85,7 +82,7 @@ export default function Hero() {
             <div className="flex-1 mx-4">
               <div className="max-w-xs mx-auto h-6 rounded-md bg-white border border-black/8 flex items-center justify-center gap-1.5 px-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#FF5F29]" />
-                <span className="text-[10px] font-inter text-gray-400">app.expovix.com/dashboard</span>
+                <span className="text-[10px] font-inter text-gray-400">expovix.com/dashboard</span>
               </div>
             </div>
           </div>
