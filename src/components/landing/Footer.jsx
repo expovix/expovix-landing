@@ -13,7 +13,7 @@ export default function Footer() {
           {/* Logo */}
           <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center">
             <img
-              src="/assets/logo/Main logo.png"
+              src="/assets/logo/main-logo.png"
               alt="ExpoVix"
               className="object-contain"
               style={{ height: 140, width: 140 }}
