@@ -16,7 +16,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center">
           <img
-            src="/assets/expovix_primary_logo_transparent.png"
+            src="/assets/logo/Main logo.png"
             alt="ExpoVix"
             className="object-contain"
             style={{ height: 140, width: 140 }}
