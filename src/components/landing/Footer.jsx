@@ -16,7 +16,7 @@ export default function Footer() {
               src="/assets/logo/main-logo.png"
               alt="ExpoVix"
               className="object-contain"
-              style={{ height: 36, width: 'auto' }}
+              style={{ height: 32, width: 'auto' }}
               onError={(e) => {
                 e.target.style.display = 'none';
                 e.target.nextSibling.style.display = 'inline';
