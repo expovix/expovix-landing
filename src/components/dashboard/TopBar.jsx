@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
 
 function getGreeting() {
   const hour = new Date().getHours();
   if (hour >= 5 && hour <= 11) return 'Good morning';
   if (hour >= 12 && hour <= 16) return 'Good afternoon';
+  if (hour >= 17 && hour <= 21) return 'Good evening';
   return 'Good evening';
 }
 
@@ -24,68 +25,23 @@ function getFirstName(user) {
 export default function TopBar() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [greeting, setGreeting] = useState(getGreeting());
-
-  useEffect(() => {
-    const interval = setInterval(() => setGreeting(getGreeting()), 60000);
-    return () => clearInterval(interval);
-  }, []);
 
   const firstName = getFirstName(user);
+  const greeting  = getGreeting();
 
   return (
-    <div style={{
-      background: 'white',
-      borderBottom: '1px solid #E5E7EB',
-      padding: '20px 32px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      marginBottom: '0',
-    }}>
+    <header className="sticky top-0 flex justify-between items-center w-full h-16 px-8 bg-white border-b border-outline-variant z-10">
       <div>
-        <div style={{
-          fontSize: '22px',
-          fontWeight: '700',
-          color: '#111827',
-          lineHeight: '1.2',
-        }}>
-          {greeting}{firstName ? `, ${firstName}` : ''}
-        </div>
-        <div style={{
-          fontSize: '14px',
-          color: '#6B7280',
-          marginTop: '2px',
-        }}>
-          Your exhibition overview
-        </div>
+        <h1 className="text-[20px] font-bold text-on-surface">Dashboard</h1>
+        <p className="text-[14px] text-secondary">{greeting}{firstName ? `, ${firstName}` : ''}</p>
       </div>
-
       <button
         onClick={() => navigate('/create-event')}
-        style={{
-          background: '#FF5F29',
-          color: 'white',
-          fontWeight: '600',
-          fontSize: '14px',
-          padding: '10px 20px',
-          borderRadius: '8px',
-          border: 'none',
-          cursor: 'pointer',
-          boxShadow: '0 1px 3px rgba(255,95,41,0.3)',
-          transition: 'all 0.15s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = '#E54E1B';
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(255,95,41,0.4)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = '#FF5F29';
-          e.currentTarget.style.boxShadow = '0 1px 3px rgba(255,95,41,0.3)';
-        }}
+        className="bg-[#FF5F29] hover:bg-[#e54e1b] text-white font-bold py-2 px-4 rounded-xl flex items-center gap-2 text-[14px] transition-colors"
       >
-        + Create Event
+        <Plus size={18} />
+        Create Event
       </button>
-    </div>
+    </header>
   );
 }
