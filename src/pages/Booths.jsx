@@ -27,8 +27,8 @@ export default function Booths() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold text-[var(--color-text)]">Booths</h1>
-      <p className="text-sm text-[var(--color-text-secondary)] mt-1">Booth management coming soon.</p>
+      <h1 className="text-[18px] font-bold text-on-surface">Booths</h1>
+      <p className="text-[13px] text-secondary mt-1">Booth management coming soon.</p>
     </DashboardLayout>
   );
 }

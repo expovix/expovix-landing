@@ -27,8 +27,8 @@ export default function MyEvents() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold text-[var(--color-text)]">My Events</h1>
-      <p className="text-sm text-[var(--color-text-secondary)] mt-1">Your events will appear here.</p>
+      <h1 className="text-[18px] font-bold text-on-surface">My Events</h1>
+      <p className="text-[13px] text-secondary mt-1">Your events will appear here.</p>
     </DashboardLayout>
   );
 }

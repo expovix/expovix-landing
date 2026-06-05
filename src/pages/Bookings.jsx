@@ -27,8 +27,8 @@ export default function Bookings() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold text-[var(--color-text)]">Bookings</h1>
-      <p className="text-sm text-[var(--color-text-secondary)] mt-1">Your bookings will appear here.</p>
+      <h1 className="text-[18px] font-bold text-on-surface">Bookings</h1>
+      <p className="text-[13px] text-secondary mt-1">Your bookings will appear here.</p>
     </DashboardLayout>
   );
 }

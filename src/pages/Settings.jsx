@@ -27,8 +27,8 @@ export default function Settings() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold text-[var(--color-text)]">Settings</h1>
-      <p className="text-sm text-[var(--color-text-secondary)] mt-1">Account settings coming soon.</p>
+      <h1 className="text-[18px] font-bold text-on-surface">Settings</h1>
+      <p className="text-[13px] text-secondary mt-1">Account settings coming soon.</p>
     </DashboardLayout>
   );
 }
