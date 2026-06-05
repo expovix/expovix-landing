@@ -88,7 +88,7 @@ export default function Sidebar() {
               color: isActive ? '#FF5F29' : '#4B5563',
               cursor: 'pointer',
               textDecoration: 'none',
-              background: isActive ? '#FFF4F0' : 'transparent',
+              background: isActive ? 'rgba(255,95,41,0.08)' : 'transparent',
               borderLeft: isActive ? '3px solid #FF5F29' : '3px solid transparent',
               transition: 'all 0.15s ease',
               marginBottom: '2px',
