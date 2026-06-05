@@ -1,13 +1,11 @@
 const thStyle = {
   padding: '12px 16px',
-  fontSize: '11px',
+  fontSize: '12px',
   fontWeight: '600',
-  color: '#6B7280',
+  color: 'white',
   textTransform: 'uppercase',
-  letterSpacing: '0.08em',
   textAlign: 'left',
-  background: '#F9FAFB',
-  borderBottom: '1px solid #E5E7EB',
+  background: '#FF5F29',
   whiteSpace: 'nowrap',
 };
 
@@ -32,7 +30,6 @@ const statusBadge = {
   RESERVED: {
     background: '#EFF6FF',
     color: '#2563EB',
-    border: '1px solid #BFDBFE',
     borderRadius: '20px',
     padding: '4px 10px',
     fontSize: '11px',

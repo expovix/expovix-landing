@@ -7,18 +7,18 @@ import RecentBookings from './RecentBookings';
 import BoothBreakdown from './BoothBreakdown';
 import SalesPipeline from './SalesPipeline';
 
-function SectionHeader({ title, viewAll, onViewAll }) {
+function SectionHeader({ title, viewAll, onViewAll, first }) {
   return (
     <div style={{
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       marginBottom: '16px',
-      marginTop: '28px',
+      marginTop: first ? '0' : '28px',
     }}>
-      <span style={{ fontSize: '15px', fontWeight: '700', color: '#111827' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: '700', color: '#111827', margin: 0 }}>
         {title}
-      </span>
+      </h2>
       {viewAll && (
         <span
           onClick={onViewAll}
@@ -42,7 +42,7 @@ function SectionHeader({ title, viewAll, onViewAll }) {
 function DefaultDashboardContent() {
   return (
     <div className="max-w-full">
-      <SectionHeader title="Inventory Overview" />
+      <SectionHeader title="Inventory Overview" first />
       <InventoryOverview />
 
       <SectionHeader title="Overview" />

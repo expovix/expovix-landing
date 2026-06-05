@@ -1,3 +1,5 @@
+import React from 'react';
+
 const rows = [
   { company: 'Global Innovations Inc.',           event: 'Tech Expo 2024',             booth: 'A-12', category: 'Exhibitor', sqm: 12, amount: 'SAR 15,000', status: 'CONFIRMED' },
   { company: 'Future Med',                        event: 'Health & Wellness Summit',   booth: 'C-08', category: 'Sponsor',   sqm: 24, amount: 'SAR 8,500',  status: 'PENDING'   },
@@ -57,6 +59,8 @@ const tdStyle = {
 };
 
 export default function RecentBookings() {
+  const [currentPage, setCurrentPage] = React.useState(1);
+
   return (
     <div style={{
       background: 'white',
@@ -112,25 +116,43 @@ export default function RecentBookings() {
       }}>
         <span style={{ fontSize: '13px', color: '#6B7280' }}>Showing 5 of 56 bookings</span>
         <div style={{ display: 'flex', gap: '8px' }}>
-          {['Prev', 'Next'].map((label) => (
-            <button
-              key={label}
-              style={{
-                border: '1px solid #E5E7EB',
-                borderRadius: '6px',
-                padding: '6px 14px',
-                fontSize: '13px',
-                color: '#374151',
-                background: 'white',
-                cursor: 'pointer',
-                transition: 'background 0.1s ease',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = '#F9FAFB'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; }}
-            >
-              {label}
-            </button>
-          ))}
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            style={{
+              border: '1px solid #E5E7EB',
+              borderRadius: '6px',
+              padding: '6px 14px',
+              fontSize: '13px',
+              color: '#374151',
+              background: 'white',
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+              opacity: currentPage === 1 ? 0.4 : 1,
+              pointerEvents: currentPage === 1 ? 'none' : 'auto',
+              transition: 'background 0.1s ease',
+            }}
+            onMouseEnter={(e) => { if (currentPage !== 1) e.currentTarget.style.background = '#F9FAFB'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; }}
+          >
+            Prev
+          </button>
+          <button
+            onClick={() => setCurrentPage((p) => p + 1)}
+            style={{
+              border: '1px solid #E5E7EB',
+              borderRadius: '6px',
+              padding: '6px 14px',
+              fontSize: '13px',
+              color: '#374151',
+              background: 'white',
+              cursor: 'pointer',
+              transition: 'background 0.1s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#F9FAFB'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; }}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

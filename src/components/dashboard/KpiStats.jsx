@@ -20,7 +20,7 @@ export default function KpiStats() {
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+      gridTemplateColumns: 'repeat(6, 1fr)',
       gap: '16px',
     }}>
       {cards.map((c) => (
@@ -47,22 +47,26 @@ export default function KpiStats() {
           <div style={{ fontSize: '12px', color: '#9CA3AF' }}>
             {c.sub}
           </div>
-          {c.label === 'Collection Rate' && (
-            <div style={{
-              width: '100%',
-              background: '#F3F4F6',
-              borderRadius: '99px',
-              height: '6px',
-              marginTop: '12px',
-            }}>
+          {c.label === 'Collection Rate' && (() => {
+            const pct = parseFloat(c.value);
+            if (!pct) return null;
+            return (
               <div style={{
-                height: '6px',
+                width: '100%',
+                background: '#F3F4F6',
                 borderRadius: '99px',
-                background: 'linear-gradient(90deg, #FF5F29, #FF8A65)',
-                width: '0%',
-              }} />
-            </div>
-          )}
+                height: '6px',
+                marginTop: '12px',
+              }}>
+                <div style={{
+                  height: '6px',
+                  borderRadius: '99px',
+                  background: 'linear-gradient(90deg, #FF5F29, #FF8A65)',
+                  width: `${pct}%`,
+                }} />
+              </div>
+            );
+          })()}
         </div>
       ))}
     </div>
