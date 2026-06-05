@@ -1,29 +1,56 @@
 const breakdown = [
-  ['Exhibitor',33],
-  ['Diamond Sponsor',8],
-  ['Platinum Sponsor',6],
-  ['Strategic Sponsor',4],
-  ['Gold Sponsor',4],
+  ['Exhibitor',        33],
+  ['Diamond Sponsor',   8],
+  ['Platinum Sponsor',  6],
+  ['Strategic Sponsor', 4],
+  ['Gold Sponsor',      4],
 ];
 
-export default function BoothBreakdown(){
-  const max = 33;
+const MAX = 33;
+
+export default function BoothBreakdown() {
   return (
-    <div className="bg-white rounded-xl border p-5" style={{borderColor:'var(--color-border)'}}>
-      <h3 className="font-semibold mb-3">Booth Category Breakdown</h3>
-      <div className="space-y-3">
-        {breakdown.map(([label,count])=> (
+    <div style={{
+      background: 'white',
+      border: '1px solid #F3F4F6',
+      borderRadius: '12px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      overflow: 'hidden',
+      padding: '24px',
+    }}>
+      <div style={{ fontSize: '15px', fontWeight: '700', color: '#111827', marginBottom: '20px' }}>
+        Booth Category Breakdown
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {breakdown.map(([label, count]) => (
           <div key={label}>
-            <div className="flex justify-between text-sm">
-              <div className="text-[var(--color-text-muted)]">{label}</div>
-              <div className="font-semibold">{count}</div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '6px',
+            }}>
+              <span style={{ fontSize: '13px', color: '#6B7280' }}>{label}</span>
+              <span style={{ fontSize: '13px', fontWeight: '600', color: '#111827' }}>{count}</span>
             </div>
-            <div className="w-full bg-[var(--color-border-light)] h-1 rounded mt-2">
-              <div className="h-1 rounded" style={{width:`${(count/max)*100}%`, backgroundColor:'var(--color-primary)'}} />
+            <div style={{
+              width: '100%',
+              background: '#F3F4F6',
+              borderRadius: '99px',
+              height: '6px',
+            }}>
+              <div style={{
+                height: '6px',
+                borderRadius: '99px',
+                background: 'linear-gradient(90deg, #FF5F29, #FF8A65)',
+                width: `${(count / MAX) * 100}%`,
+                transition: 'width 0.4s ease',
+              }} />
             </div>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }

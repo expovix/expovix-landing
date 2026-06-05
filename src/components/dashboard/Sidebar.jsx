@@ -5,11 +5,11 @@ import { useAuth } from '../../lib/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
 
 const nav = [
-  { label: 'Dashboard',  icon: LayoutDashboard, to: '/dashboard' },
-  { label: 'My Events',  icon: CalendarDays,    to: '/my-events' },
-  { label: 'Booths',     icon: Grid2x2,         to: '/booths'    },
-  { label: 'Bookings',   icon: ClipboardList,   to: '/bookings'  },
-  { label: 'Settings',   icon: Settings,        to: '/settings'  },
+  { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
+  { label: 'My Events', icon: CalendarDays,    to: '/my-events' },
+  { label: 'Booths',    icon: Grid2x2,         to: '/booths'    },
+  { label: 'Bookings',  icon: ClipboardList,   to: '/bookings'  },
+  { label: 'Settings',  icon: Settings,        to: '/settings'  },
 ];
 
 function getInitials(str) {
@@ -48,46 +48,70 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div style={{
+      width: '220px',
+      height: '100vh',
+      background: '#F8F9FA',
+      borderRight: '1px solid #E5E7EB',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
+
       {/* Logo */}
-      <div
-        className="border-b"
-        style={{
-          borderColor: 'var(--color-border)',
-          padding: '16px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
+      <div style={{
+        padding: '20px 16px 16px 16px',
+        borderBottom: '1px solid #E5E7EB',
+      }}>
         <img
           src="/assets/logo/main-logo.png"
           alt="ExpoVix"
-          height="32"
-          style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
+          height="28"
+          style={{ height: '28px', width: 'auto', objectFit: 'contain' }}
           onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
         />
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-2 py-4">
+      <nav style={{ padding: '12px 8px', flex: 1 }}>
         {nav.map((n) => (
           <NavLink
             key={n.to}
             to={n.to}
-            className={({ isActive }) =>
-              `flex items-center h-11 px-4 rounded-md mb-1 text-sm transition-colors ${
-                isActive
-                  ? 'bg-[#fff7f4] border-l-[3px] border-[#FF5F29] font-semibold text-[#FF5F29]'
-                  : 'text-[#6B7280] hover:bg-gray-50'
-              }`
-            }
+            style={({ isActive }) => ({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: isActive ? '8px 12px 8px 9px' : '8px 12px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: isActive ? '600' : '500',
+              color: isActive ? '#FF5F29' : '#4B5563',
+              cursor: 'pointer',
+              textDecoration: 'none',
+              background: isActive ? '#FFF4F0' : 'transparent',
+              borderLeft: isActive ? '3px solid #FF5F29' : '3px solid transparent',
+              transition: 'all 0.15s ease',
+              marginBottom: '2px',
+            })}
+            onMouseEnter={(e) => {
+              if (!e.currentTarget.dataset.active) {
+                e.currentTarget.style.background = '#F3F4F6';
+                e.currentTarget.style.color = '#111827';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!e.currentTarget.dataset.active) {
+                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.color = '#4B5563';
+              }
+            }}
           >
             {({ isActive }) => (
               <>
                 <n.icon
                   size={18}
-                  className="mr-3 flex-shrink-0"
-                  color={isActive ? '#FF5F29' : '#6B7280'}
+                  color={isActive ? '#FF5F29' : '#4B5563'}
+                  style={{ flexShrink: 0 }}
                 />
                 {n.label}
               </>
@@ -97,20 +121,52 @@ export default function Sidebar() {
       </nav>
 
       {/* User / Logout */}
-      <div
-        ref={dropdownRef}
-        className="relative px-4 py-4 border-t"
-        style={{ borderColor: 'var(--color-border)' }}
-      >
+      <div ref={dropdownRef} style={{ position: 'relative' }}>
         {dropdownOpen && (
-          <div className="absolute bottom-full left-4 right-4 mb-2 bg-white rounded-lg shadow-lg border border-gray-100 p-2 min-w-[200px] z-50">
-            <div className="text-xs text-gray-400 px-2 py-1 truncate">{email}</div>
-            <div className="border-t border-gray-100 my-1" />
+          <div style={{
+            position: 'absolute',
+            bottom: '60px',
+            left: '16px',
+            background: 'white',
+            borderRadius: '10px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+            border: '1px solid #F3F4F6',
+            minWidth: '200px',
+            padding: '6px',
+            zIndex: 50,
+          }}>
+            <div style={{
+              fontSize: '12px',
+              color: '#6B7280',
+              padding: '6px 12px',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}>
+              {email}
+            </div>
+            <div style={{ borderTop: '1px solid #F3F4F6', margin: '4px 0' }} />
             <button
               onClick={handleLogout}
-              className="flex items-center w-full px-2 py-2 text-sm text-[#EF4444] rounded-md hover:bg-red-50 transition-colors"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                width: '100%',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                fontSize: '14px',
+                color: '#EF4444',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'background 0.1s ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#FEF2F2'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
             >
-              <LogOut size={15} className="mr-2 flex-shrink-0" />
+              <LogOut size={15} />
               Log out
             </button>
           </div>
@@ -118,14 +174,55 @@ export default function Sidebar() {
 
         <button
           onClick={() => setDropdownOpen((v) => !v)}
-          className="flex items-center space-x-3 w-full text-left"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            width: '100%',
+            padding: '12px 16px',
+            borderTop: '1px solid #E5E7EB',
+            background: 'transparent',
+            border: 'none',
+            borderTop: '1px solid #E5E7EB',
+            cursor: 'pointer',
+            textAlign: 'left',
+          }}
         >
-          <div className="w-8 h-8 rounded-full bg-[#FF5F29] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            background: '#FF5F29',
+            color: 'white',
+            fontSize: '13px',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}>
             {initials}
           </div>
-          <div className="min-w-0">
-            <div className="text-sm font-semibold truncate">{displayName}</div>
-            <div className="text-xs text-gray-400 truncate">{subLabel}</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={{
+              fontSize: '13px',
+              fontWeight: '600',
+              color: '#111827',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}>
+              {displayName}
+            </div>
+            <div style={{
+              fontSize: '11px',
+              color: '#6B7280',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}>
+              {subLabel}
+            </div>
           </div>
         </button>
       </div>
