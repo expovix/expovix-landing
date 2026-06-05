@@ -54,7 +54,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div
         className="flex items-center border-b border-[#e5e7eb]"
-        style={{ height: '80px', padding: '20px 16px 16px 16px' }}
+        style={{ height: '64px', paddingLeft: '12px' }}
       >
         <img
           src="/assets/logo/main-logo.png"
