@@ -17,9 +17,9 @@ export default function KpiStats() {
             key={card.label}
             className="bg-white border border-outline-variant p-4 flex flex-col justify-between rounded-xl shadow-sm"
           >
-            <p className="text-[12px] font-bold text-secondary uppercase tracking-wide mb-2">{card.label}</p>
-            <p className="text-[40px] leading-tight text-on-surface font-bold tracking-tight">{card.value}</p>
-            <p className="text-[12px] text-secondary mt-1">{card.sub}</p>
+            <p className="text-[11px] font-semibold text-secondary uppercase tracking-wide mb-2">{card.label}</p>
+            <p className="text-[28px] leading-tight text-on-surface font-bold tracking-tight">{card.value}</p>
+            <p className="text-[12px] font-normal text-secondary mt-1">{card.sub}</p>
             {card.showBar && pct > 0 && (
               <div className="bg-surface-variant h-1.5 rounded-full mt-2">
                 <div

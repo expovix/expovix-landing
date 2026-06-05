@@ -59,7 +59,7 @@ export default function Sidebar() {
         <img
           src="/assets/logo/main-logo.png"
           alt="ExpoVix"
-          style={{ height: '44px', width: 'auto' }}
+          style={{ height: '32px', width: 'auto' }}
         />
       </div>
 
@@ -71,11 +71,11 @@ export default function Sidebar() {
             to={to}
             className={({ isActive }) =>
               isActive
-                ? 'flex items-center gap-3 border-l-4 border-[#FF5F29] bg-orange-50 text-on-surface font-bold px-4 py-3'
-                : 'flex items-center gap-3 text-secondary px-4 py-3 hover:bg-surface-container-low transition-colors'
+                ? 'flex items-center gap-3 border-l-4 border-[#FF5F29] bg-orange-50 text-on-surface text-[13px] font-semibold px-3 py-2'
+                : 'flex items-center gap-3 text-secondary text-[13px] font-medium px-3 py-2 hover:bg-surface-container-low transition-colors'
             }
           >
-            <Icon size={20} />
+            <Icon className="w-4 h-4 flex-shrink-0" />
             {label}
           </NavLink>
         ))}
@@ -85,7 +85,7 @@ export default function Sidebar() {
       <div className="px-6 mt-auto relative" ref={dropdownRef}>
         {dropdownOpen && (
           <div className="absolute bottom-14 left-0 right-0 mx-2 bg-white border border-outline-variant rounded-xl shadow-lg py-2 z-50">
-            <p className="text-[12px] text-secondary px-4 py-1 truncate">{email}</p>
+            <p className="text-[11px] text-secondary px-4 py-1 truncate">{email}</p>
             <div className="border-t border-outline-variant my-1" />
             <button
               onClick={handleLogout}
@@ -100,12 +100,12 @@ export default function Sidebar() {
           onClick={() => setDropdownOpen((v) => !v)}
           className="flex items-center gap-3 w-full"
         >
-          <div className="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center font-bold text-on-surface text-sm flex-shrink-0">
+          <div className="w-7 h-7 rounded-full bg-surface-variant flex items-center justify-center font-bold text-on-surface text-xs flex-shrink-0">
             {initials}
           </div>
           <div className="min-w-0 text-left">
-            <p className="text-body-md font-bold text-on-surface text-sm truncate">{displayName}</p>
-            <p className="text-label-sm text-secondary text-xs">Event Organizer</p>
+            <p className="text-[13px] font-semibold text-on-surface truncate">{displayName}</p>
+            <p className="text-[11px] font-normal text-secondary">Event Organizer</p>
           </div>
         </button>
       </div>

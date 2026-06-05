@@ -27,8 +27,8 @@ export default function CreateEvent() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold text-[var(--color-text)]">Create Event</h1>
-      <p className="text-sm text-[var(--color-text-secondary)] mt-1">Event creation form coming soon.</p>
+      <h1 className="text-[18px] font-bold text-on-surface">Create Event</h1>
+      <p className="text-[13px] text-secondary mt-1">Event creation form coming soon.</p>
     </DashboardLayout>
   );
 }
