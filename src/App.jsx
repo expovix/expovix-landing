@@ -13,6 +13,7 @@ import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import MyEvents from './pages/MyEvents';
 import Booths from './pages/Booths';
+import Bookings from './pages/Bookings';
 import Settings from './pages/Settings';
 import CreateEvent from './pages/CreateEvent';
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/my-events" element={<MyEvents />} />
             <Route path="/booths" element={<Booths />} />
+            <Route path="/bookings" element={<Bookings />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/create-event" element={<CreateEvent />} />
             <Route path="*" element={<PageNotFound />} />
