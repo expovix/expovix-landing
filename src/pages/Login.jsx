@@ -23,7 +23,7 @@ export default function Login() {
     if (error) {
       setError(error.message);
     } else {
-      window.location.href = "https://app.expovix.com/app.html";
+      window.location.href = "/dashboard";
     }
     setLoading(false);
   };
@@ -31,7 +31,7 @@ export default function Login() {
   const handleGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: "https://app.expovix.com/app.html" }
+      options: { redirectTo: "/dashboard" }
     });
   };
 

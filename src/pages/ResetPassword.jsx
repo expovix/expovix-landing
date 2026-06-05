@@ -23,7 +23,7 @@ export default function ResetPassword() {
       setError(error.message);
     } else {
       setDone(true);
-      setTimeout(() => { window.location.href = "https://app.expovix.com/app.html"; }, 2000);
+      setTimeout(() => { window.location.href = "/dashboard"; }, 2000);
     }
     setLoading(false);
   };

@@ -34,7 +34,7 @@ export default function Register() {
   const handleGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: "https://app.expovix.com/app.html" }
+      options: { redirectTo: "/dashboard" }
     });
   };
 
