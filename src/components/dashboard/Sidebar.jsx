@@ -25,11 +25,11 @@ export default function Sidebar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  const fullName   = user?.user_metadata?.full_name;
-  const email      = user?.email || '';
+  const fullName    = user?.user_metadata?.full_name;
+  const email       = user?.email || '';
   const displayName = fullName || email;
-  const subLabel   = fullName ? email : 'Event Organizer';
-  const initials   = getInitials(fullName || email.split('@')[0]);
+  const subLabel    = fullName ? email : 'Event Organizer';
+  const initials    = getInitials(fullName || email.split('@')[0]);
 
   useEffect(() => {
     if (!dropdownOpen) return;
@@ -50,15 +50,22 @@ export default function Sidebar() {
   return (
     <div className="flex flex-col h-screen">
       {/* Logo */}
-      <div className="px-4 pt-5 pb-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
-        <div style={{ background: 'transparent' }}>
-          <img
-            src="/assets/logo/main-logo.png"
-            alt="ExpoVix"
-            style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
-            onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
-          />
-        </div>
+      <div
+        className="border-b"
+        style={{
+          borderColor: 'var(--color-border)',
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <img
+          src="/assets/logo/main-logo.png"
+          alt="ExpoVix"
+          height="32"
+          style={{ height: '32px', width: 'auto', objectFit: 'contain' }}
+          onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
+        />
       </div>
 
       {/* Nav */}

@@ -1,0 +1,34 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
+import DashboardLayout from '../components/dashboard/DashboardLayout';
+
+export default function Bookings() {
+  const navigate = useNavigate();
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    async function check() {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (!data?.session && mounted) navigate('/login');
+      } catch {
+        if (mounted) navigate('/login');
+      } finally {
+        if (mounted) setChecking(false);
+      }
+    }
+    check();
+    return () => { mounted = false; };
+  }, [navigate]);
+
+  if (checking) return null;
+
+  return (
+    <DashboardLayout>
+      <h1 className="text-2xl font-bold text-[var(--color-text)]">Bookings</h1>
+      <p className="text-sm text-[var(--color-text-secondary)] mt-1">Your bookings will appear here.</p>
+    </DashboardLayout>
+  );
+}
