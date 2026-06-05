@@ -10,47 +10,22 @@ const MAX = 33;
 
 export default function BoothBreakdown() {
   return (
-    <div style={{
-      background: 'white',
-      border: '1px solid #F3F4F6',
-      borderRadius: '12px',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-      overflow: 'hidden',
-      padding: '24px',
-    }}>
-      <div style={{ fontSize: '15px', fontWeight: '700', color: '#111827', marginBottom: '20px' }}>
-        Booth Category Breakdown
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {breakdown.map(([label, count]) => (
-          <div key={label}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '6px',
-            }}>
-              <span style={{ fontSize: '13px', color: '#6B7280' }}>{label}</span>
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#111827' }}>{count}</span>
-            </div>
-            <div style={{
-              width: '100%',
-              background: '#F3F4F6',
-              borderRadius: '99px',
-              height: '6px',
-            }}>
-              <div style={{
-                height: '6px',
-                borderRadius: '99px',
-                background: 'linear-gradient(90deg, #FF5F29, #FF8A65)',
-                width: `${(count / MAX) * 100}%`,
-                transition: 'width 0.4s ease',
-              }} />
-            </div>
+    <div className="bg-white border border-outline-variant p-4 rounded-xl shadow-sm">
+      <h2 className="text-[20px] font-bold text-on-surface mb-4">Booth Category Breakdown</h2>
+      {breakdown.map(([label, count]) => (
+        <div key={label} className="mb-3">
+          <div className="flex justify-between text-[14px] mb-1">
+            <span className="text-on-surface font-bold">{label}</span>
+            <span className="text-secondary">{count}</span>
           </div>
-        ))}
-      </div>
+          <div className="bg-surface-variant h-3 rounded-full">
+            <div
+              className="bg-[#FF5F29] h-3 rounded-full"
+              style={{ width: `${(count / MAX) * 100}%` }}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,105 +1,73 @@
-const thStyle = {
-  padding: '12px 16px',
-  fontSize: '12px',
-  fontWeight: '600',
-  color: 'white',
-  textTransform: 'uppercase',
-  textAlign: 'left',
-  background: '#FF5F29',
-  whiteSpace: 'nowrap',
-};
-
-const tdStyle = {
-  padding: '14px 16px',
-  borderBottom: '1px solid #F9FAFB',
-  fontSize: '14px',
-  color: '#374151',
-  verticalAlign: 'middle',
-};
-
-const statusBadge = {
-  CONFIRMED: {
-    background: '#DCFCE7',
-    color: '#16A34A',
-    borderRadius: '20px',
-    padding: '4px 10px',
-    fontSize: '11px',
-    fontWeight: '600',
-    display: 'inline-block',
-  },
-  RESERVED: {
-    background: '#EFF6FF',
-    color: '#2563EB',
-    borderRadius: '20px',
-    padding: '4px 10px',
-    fontSize: '11px',
-    fontWeight: '600',
-    display: 'inline-block',
-  },
-  AVAILABLE: {
-    background: '#F3F4F6',
-    color: '#374151',
-    borderRadius: '20px',
-    padding: '4px 10px',
-    fontSize: '11px',
-    fontWeight: '600',
-    display: 'inline-block',
-  },
-};
-
 const rows = [
   { status: 'CONFIRMED', stands: 0,  sqm: 0,    sponsors: 0,  exhibitors: 0  },
   { status: 'RESERVED',  stands: 0,  sqm: 0,    sponsors: 0,  exhibitors: 0  },
   { status: 'AVAILABLE', stands: 59, sqm: 1347, sponsors: 26, exhibitors: 33 },
 ];
 
+const totals = {
+  stands:     rows.reduce((s, r) => s + r.stands, 0),
+  sqm:        rows.reduce((s, r) => s + r.sqm, 0),
+  sponsors:   rows.reduce((s, r) => s + r.sponsors, 0),
+  exhibitors: rows.reduce((s, r) => s + r.exhibitors, 0),
+};
+
+function StatusBadge({ status }) {
+  if (status === 'CONFIRMED') {
+    return (
+      <span className="bg-on-surface text-white px-2 py-1 text-[12px] font-bold uppercase rounded-xl">
+        {status}
+      </span>
+    );
+  }
+  if (status === 'RESERVED') {
+    return (
+      <span className="border border-[#FF5F29] text-[#FF5F29] px-2 py-1 text-[12px] font-bold uppercase rounded-xl">
+        {status}
+      </span>
+    );
+  }
+  return (
+    <span className="bg-surface-variant text-secondary px-2 py-1 text-[12px] font-bold uppercase rounded-xl">
+      {status}
+    </span>
+  );
+}
+
 export default function InventoryOverview() {
   return (
-    <div style={{
-      background: 'white',
-      border: '1px solid #F3F4F6',
-      borderRadius: '12px',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-      overflow: 'hidden',
-    }}>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th style={thStyle}>Status</th>
-              <th style={thStyle}>Total Stands</th>
-              <th style={thStyle}>Total SQM</th>
-              <th style={thStyle}>Sponsor Stands</th>
-              <th style={thStyle}>Exhibitor Stands</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr
-                key={r.status}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#FAFAFA'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-                style={{ transition: 'background 0.1s ease' }}
-              >
-                <td style={tdStyle}>
-                  <span style={statusBadge[r.status]}>{r.status}</span>
-                </td>
-                <td style={tdStyle}>{r.stands}</td>
-                <td style={tdStyle}>{r.sqm}</td>
-                <td style={tdStyle}>{r.sponsors}</td>
-                <td style={tdStyle}>{r.exhibitors}</td>
-              </tr>
-            ))}
-            <tr style={{ background: '#F9FAFB' }}>
-              <td style={{ ...tdStyle, fontWeight: '700', color: '#111827', borderBottom: 'none' }}>TOTAL</td>
-              <td style={{ ...tdStyle, fontWeight: '700', color: '#111827', borderBottom: 'none' }}>59</td>
-              <td style={{ ...tdStyle, fontWeight: '700', color: '#111827', borderBottom: 'none' }}>1347</td>
-              <td style={{ ...tdStyle, fontWeight: '700', color: '#111827', borderBottom: 'none' }}>26</td>
-              <td style={{ ...tdStyle, fontWeight: '700', color: '#111827', borderBottom: 'none' }}>33</td>
-            </tr>
-          </tbody>
-        </table>
+    <section className="bg-surface border border-outline-variant shadow-sm overflow-hidden flex flex-col rounded-xl mb-4">
+      <div className="p-4 border-b border-outline-variant flex justify-between items-center bg-white">
+        <h2 className="text-[20px] font-bold text-on-surface">Inventory Overview</h2>
       </div>
-    </div>
+      <table className="w-full text-left border-collapse">
+        <thead>
+          <tr className="bg-[#FF5F29] text-white">
+            <th className="p-4 text-[12px] font-bold text-white border-b border-outline-variant uppercase">Status</th>
+            <th className="p-4 text-[12px] font-bold text-white border-b border-outline-variant uppercase">Total Stands</th>
+            <th className="p-4 text-[12px] font-bold text-white border-b border-outline-variant uppercase">Total SQM</th>
+            <th className="p-4 text-[12px] font-bold text-white border-b border-outline-variant uppercase border-l border-[#ff8b6b]">Sponsors Stands</th>
+            <th className="p-4 text-[12px] font-bold text-white border-b border-outline-variant uppercase border-l border-[#ff8b6b]">Exhibitors Stands</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.status} className="hover:bg-surface-container-low transition-colors">
+              <td className="p-4"><StatusBadge status={row.status} /></td>
+              <td className="p-4 text-right text-[20px] font-bold text-on-surface">{row.stands}</td>
+              <td className="p-4 text-right text-[20px] font-bold text-on-surface">{row.sqm}</td>
+              <td className="p-4 text-right text-[20px] font-bold text-on-surface border-l border-outline-variant">{row.sponsors}</td>
+              <td className="p-4 text-right text-[20px] font-bold text-on-surface border-l border-outline-variant">{row.exhibitors}</td>
+            </tr>
+          ))}
+          <tr className="bg-surface-variant font-bold border-t-2 border-outline">
+            <td className="p-4 text-[12px] font-bold text-secondary uppercase">TOTAL</td>
+            <td className="p-4 text-right text-[20px] font-bold text-on-surface">{totals.stands}</td>
+            <td className="p-4 text-right text-[20px] font-bold text-on-surface">{totals.sqm}</td>
+            <td className="p-4 text-right text-[20px] font-bold text-on-surface border-l border-outline-variant">{totals.sponsors}</td>
+            <td className="p-4 text-right text-[20px] font-bold text-on-surface border-l border-outline-variant">{totals.exhibitors}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
   );
 }

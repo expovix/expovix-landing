@@ -13,7 +13,17 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-  			background: 'hsl(var(--background))',
+  			'surface-container-low': '#f0f3ff',
+  			'outline-variant': '#e3beb4',
+  			'on-surface': '#151c27',
+  			'secondary': '#5f5e5e',
+  			'primary-container': '#ff5f29',
+  			'surface-variant': '#dce2f3',
+  			'surface': '#f9f9ff',
+  			'surface-container': '#e7eefe',
+  			'on-primary': '#ffffff',
+  			'outline': '#e3beb4',
+  			background: '#f9f9ff',
   			foreground: 'hsl(var(--foreground))',
   			card: {
   				DEFAULT: 'hsl(var(--card))',
@@ -26,10 +36,6 @@ module.exports = {
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'
-  			},
-  			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
   			},
   			muted: {
   				DEFAULT: 'hsl(var(--muted))',

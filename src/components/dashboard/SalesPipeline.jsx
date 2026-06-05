@@ -1,86 +1,49 @@
+import { TrendingUp } from 'lucide-react';
+
 const pipeline = [
-  { status: 'Available',  booths: 59, detail: '1,347 SQM — SAR 0', highlight: true },
-  { status: 'Reserved',   booths: 0,  detail: '0 SQM — SAR 0',     highlight: false },
-  { status: 'Confirmed',  booths: 0,  detail: '0 SQM — SAR 0',     highlight: false },
+  { status: 'Available',  booths: 59, sqm: '1,347 SQM', sar: 'SAR 0'   },
+  { status: 'Reserved',   booths: 0,  sqm: '0 SQM',     sar: 'SAR 0'   },
+  { status: 'Confirmed',  booths: 0,  sqm: '0 SQM',     sar: 'SAR 0'   },
 ];
 
 export default function SalesPipeline() {
   return (
-    <div style={{
-      background: 'white',
-      border: '1px solid #F3F4F6',
-      borderRadius: '12px',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-      overflow: 'hidden',
-      padding: '24px',
-    }}>
-      <div style={{ fontSize: '15px', fontWeight: '700', color: '#111827', marginBottom: '20px' }}>
-        Sales Pipeline
-      </div>
-
-      {/* Table */}
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 80px 1fr',
-          gap: '8px',
-          padding: '0 0 8px 0',
-          borderBottom: '1px solid #F3F4F6',
-          marginBottom: '8px',
-        }}>
-          {['Status', 'Booths', 'SQM / SAR'].map((h) => (
-            <span key={h} style={{
-              fontSize: '11px',
-              fontWeight: '600',
-              color: '#6B7280',
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-            }}>{h}</span>
+    <div className="bg-white border border-outline-variant p-4 flex flex-col justify-between rounded-xl shadow-sm">
+      <div>
+        <h2 className="text-[20px] font-bold text-on-surface mb-4">Sales Pipeline</h2>
+        {/* Header row */}
+        <div className="grid grid-cols-3 gap-2 p-3 bg-surface-container-low font-bold text-[12px] text-secondary uppercase rounded-xl mb-2">
+          <span>Status</span>
+          <span className="text-center">Booths</span>
+          <span className="text-right">SQM/SAR</span>
+        </div>
+        {/* Pipeline rows */}
+        <div className="flex flex-col gap-2">
+          {pipeline.map((row) => (
+            <div
+              key={row.status}
+              className="flex justify-between items-center p-3 bg-surface-container-low rounded-xl"
+            >
+              <span className="text-[14px] font-bold text-on-surface">{row.status}</span>
+              <span className="text-[14px] font-bold text-[#FF5F29]">{row.booths}</span>
+              <div className="text-right">
+                <p className="text-[12px] text-on-surface">{row.sqm}</p>
+                <p className="text-[10px] text-secondary">{row.sar}</p>
+              </div>
+            </div>
           ))}
         </div>
-
-        {pipeline.map(({ status, booths, detail, highlight }) => (
-          <div key={status} style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 80px 1fr',
-            gap: '8px',
-            padding: '10px 0',
-            borderBottom: '1px solid #F9FAFB',
-          }}>
-            <span style={{ fontSize: '14px', color: '#374151' }}>{status}</span>
-            <span style={{
-              fontSize: '14px',
-              fontWeight: highlight ? '700' : '400',
-              color: highlight ? '#FF5F29' : '#374151',
-            }}>{booths}</span>
-            <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{detail}</span>
-          </div>
-        ))}
       </div>
-
-      {/* Collection rate */}
-      <div>
-        <div style={{ fontSize: '11px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
-          Collection Rate
+      {/* Bottom section */}
+      <div className="border-t border-outline-variant pt-4 mt-4 flex justify-between items-end">
+        <div>
+          <p className="text-[12px] text-secondary uppercase">Collection Rate</p>
+          <p className="text-[30px] font-bold text-on-surface">0%</p>
+          <p className="text-[10px] text-secondary">Of total pipeline value</p>
         </div>
-        <div style={{ fontSize: '28px', fontWeight: '700', color: '#111827', lineHeight: '1.1', marginBottom: '2px' }}>
-          0%
-        </div>
-        <div style={{ fontSize: '12px', color: '#16A34A', marginBottom: '10px' }}>
+        <div className="text-[12px] text-green-600 font-bold flex items-center gap-1">
+          <TrendingUp size={16} />
           +2.5% this month
-        </div>
-        <div style={{
-          width: '100%',
-          background: '#F3F4F6',
-          borderRadius: '99px',
-          height: '6px',
-        }}>
-          <div style={{
-            height: '6px',
-            borderRadius: '99px',
-            background: 'linear-gradient(90deg, #FF5F29, #FF8A65)',
-            width: '0%',
-          }} />
         </div>
       </div>
     </div>
