@@ -2,10 +2,45 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
+import TopBar from '../components/dashboard/TopBar';
+
+const BOOTHS = [
+  { number: 'A-01', size: 9,  type: 'Standard', status: 'Available', price: 'SAR 8,000',  event: 'Tech Expo 2024'           },
+  { number: 'A-12', size: 12, type: 'Standard', status: 'Booked',    price: 'SAR 15,000', event: 'Tech Expo 2024'           },
+  { number: 'B-04', size: 18, type: 'Corner',   status: 'Reserved',  price: 'SAR 22,000', event: 'Tech Expo 2024'           },
+  { number: 'B-22', size: 9,  type: 'Standard', status: 'Booked',    price: 'SAR 12,000', event: 'Tech Expo 2024'           },
+  { number: 'C-08', size: 24, type: 'Island',   status: 'Booked',    price: 'SAR 30,000', event: 'Health & Wellness Summit' },
+  { number: 'D-01', size: 9,  type: 'Standard', status: 'Available', price: 'SAR 8,000',  event: 'Health & Wellness Summit' },
+  { number: 'D-15', size: 18, type: 'Corner',   status: 'Reserved',  price: 'SAR 22,000', event: 'Tech Expo 2024'           },
+  { number: 'E-04', size: 12, type: 'Standard', status: 'Booked',    price: 'SAR 18,000', event: 'Health & Wellness Summit' },
+  { number: 'L-09', size: 36, type: 'Island',   status: 'Booked',    price: 'SAR 45,000', event: 'Global Logistics Summit'  },
+  { number: 'M-02', size: 9,  type: 'Standard', status: 'Available', price: 'SAR 9,000',  event: 'Global Logistics Summit'  },
+];
+
+const EVENTS = ['All Events', 'Tech Expo 2024', 'Health & Wellness Summit', 'Global Logistics Summit'];
+
+const STATUS_COLORS = {
+  Available: { background: '#DCFCE7', color: '#16A34A' },
+  Booked:    { background: '#FFF7ED', color: '#EA580C' },
+  Reserved:  { background: '#DBEAFE', color: '#1D4ED8' },
+};
+
+const thStyle = {
+  padding: '10px 16px', fontSize: '11px', fontWeight: '600', color: '#6B7280',
+  textTransform: 'uppercase', letterSpacing: '0.06em',
+  background: '#F9FAFB', borderBottom: '1px solid #E5E7EB',
+  textAlign: 'left', whiteSpace: 'nowrap',
+};
+const tdStyle = {
+  padding: '12px 16px', fontSize: '13px', color: '#374151',
+  borderBottom: '1px solid #F9FAFB', verticalAlign: 'middle',
+};
 
 export default function Booths() {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
+  const [search, setSearch] = useState('');
+  const [eventFilter, setEventFilter] = useState('All Events');
 
   useEffect(() => {
     let mounted = true;
@@ -25,10 +60,106 @@ export default function Booths() {
 
   if (checking) return null;
 
+  const available = BOOTHS.filter(b => b.status === 'Available').length;
+  const booked    = BOOTHS.filter(b => b.status === 'Booked' || b.status === 'Reserved').length;
+
+  const filtered = BOOTHS.filter(b => {
+    const q = search.toLowerCase();
+    const matchSearch = b.number.toLowerCase().includes(q) || b.type.toLowerCase().includes(q);
+    const matchEvent  = eventFilter === 'All Events' || b.event === eventFilter;
+    return matchSearch && matchEvent;
+  });
+
   return (
     <DashboardLayout>
-      <h1 className="text-[18px] font-bold text-on-surface">Booths</h1>
-      <p className="text-[13px] text-secondary mt-1">Booth management coming soon.</p>
+      <TopBar title="Booths" rightContent={null} />
+      <div style={{ padding: '32px', background: '#F8F9FA', flex: 1 }}>
+
+        {/* Summary cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
+          {[
+            { label: 'Total Booths', value: BOOTHS.length },
+            { label: 'Available',    value: available      },
+            { label: 'Booked',       value: booked         },
+          ].map(({ label, value }) => (
+            <div key={label} style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+              <p style={{ fontSize: '11px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
+                {label}
+              </p>
+              <p style={{ fontSize: '28px', fontWeight: '700', color: '#111827' }}>{value}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Filters */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            placeholder="Search booths..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              flex: 1, maxWidth: '320px', padding: '8px 12px',
+              border: '1px solid #E5E7EB', borderRadius: '8px',
+              fontSize: '13px', outline: 'none', background: 'white',
+            }}
+          />
+          <select
+            value={eventFilter}
+            onChange={e => setEventFilter(e.target.value)}
+            style={{
+              padding: '8px 12px', border: '1px solid #E5E7EB', borderRadius: '8px',
+              fontSize: '13px', outline: 'none', background: 'white', cursor: 'pointer',
+            }}
+          >
+            {EVENTS.map(ev => <option key={ev}>{ev}</option>)}
+          </select>
+        </div>
+
+        {/* Table */}
+        <div style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+              <thead>
+                <tr>
+                  {['Booth #', 'Size (sqm)', 'Type', 'Status', 'Price', 'Event'].map(h => (
+                    <th key={h} style={thStyle}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((row, i) => (
+                  <tr
+                    key={i}
+                    style={{ transition: 'background 0.1s ease', cursor: 'default' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#FFF7F5'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                  >
+                    <td style={{ ...tdStyle, fontWeight: '600', color: '#111827' }}>{row.number}</td>
+                    <td style={tdStyle}>{row.size}</td>
+                    <td style={tdStyle}>{row.type}</td>
+                    <td style={tdStyle}>
+                      <span style={{
+                        ...STATUS_COLORS[row.status],
+                        fontSize: '11px', fontWeight: '600',
+                        padding: '3px 10px', borderRadius: '20px', display: 'inline-block',
+                      }}>
+                        {row.status}
+                      </span>
+                    </td>
+                    <td style={{ ...tdStyle, fontWeight: '500' }}>{row.price}</td>
+                    <td style={{ ...tdStyle, color: '#9CA3AF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>{row.event}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ padding: '12px 16px', borderTop: '1px solid #F3F4F6', fontSize: '12px', color: '#9CA3AF' }}>
+            Showing {filtered.length} of {BOOTHS.length} booths
+          </div>
+        </div>
+
+      </div>
     </DashboardLayout>
   );
 }
