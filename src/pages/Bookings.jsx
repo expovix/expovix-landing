@@ -4,6 +4,9 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer,
+} from 'recharts';
 
 const BOOKINGS = [
   { booth: 'A-12', exhibitor: 'Global Innovations Inc.',  event: 'Tech Expo 2024',          status: 'CONFIRMED', amount: 'SAR 15,000', date: 'Oct 12, 2024' },
@@ -22,6 +25,12 @@ const STATUS_COLORS = {
   PENDING:   { background: '#F3F4F6', color: '#6B7280' },
 };
 
+const STATUS_BAR_COLORS = {
+  CONFIRMED: '#22C55E',
+  RESERVED:  '#6366F1',
+  PENDING:   '#F59E0B',
+};
+
 const thStyle = {
   padding: '10px 16px', fontSize: '11px', fontWeight: '600', color: '#6B7280',
   textTransform: 'uppercase', letterSpacing: '0.06em',
@@ -32,6 +41,15 @@ const tdStyle = {
   padding: '12px 16px', fontSize: '13px', color: '#374151',
   borderBottom: '1px solid #F9FAFB', verticalAlign: 'middle',
 };
+
+function StatusBarTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div style={{ background: 'white', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+      <p style={{ margin: 0, fontWeight: '600', color: '#111827' }}>{label}: {payload[0].value}</p>
+    </div>
+  );
+}
 
 export default function Bookings() {
   const navigate = useNavigate();
@@ -63,6 +81,12 @@ export default function Bookings() {
     RESERVED:  BOOKINGS.filter(b => b.status === 'RESERVED').length,
     PENDING:   BOOKINGS.filter(b => b.status === 'PENDING').length,
   };
+
+  const statusBarData = [
+    { status: 'Confirmed', count: counts.CONFIRMED },
+    { status: 'Reserved',  count: counts.RESERVED  },
+    { status: 'Pending',   count: counts.PENDING   },
+  ];
 
   const filtered = BOOKINGS.filter(b => {
     const q = search.toLowerCase();
@@ -116,6 +140,37 @@ export default function Bookings() {
               <p style={{ fontSize: '28px', fontWeight: '700', color: '#111827' }}>{value}</p>
             </motion.div>
           ))}
+        </div>
+
+        {/* Chart 5: Bookings by Status bar chart */}
+        <div style={{ background: 'white', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', padding: '24px', marginBottom: '24px' }}>
+          <p style={{ fontSize: '16px', fontWeight: '600', color: '#111111', margin: '0 0 16px 0' }}>Bookings by Status</p>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={statusBarData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} barCategoryGap="50%">
+              <XAxis
+                dataKey="status"
+                tick={{ fontSize: 12, fill: '#6B7280' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                domain={[0, 5]}
+                tick={{ fontSize: 11, fill: '#9CA3AF' }}
+                axisLine={false}
+                tickLine={false}
+                allowDecimals={false}
+              />
+              <Tooltip content={<StatusBarTooltip />} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
+              <Bar dataKey="count" radius={[4, 4, 0, 0]} isAnimationActive={!shouldReduce}>
+                {statusBarData.map((entry, i) => (
+                  <Cell
+                    key={i}
+                    fill={STATUS_BAR_COLORS[entry.status.toUpperCase()] || '#6B7280'}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Filters */}

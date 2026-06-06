@@ -4,6 +4,9 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
+import {
+  PieChart, Pie, Cell, ResponsiveContainer,
+} from 'recharts';
 
 const BOOTHS = [
   { number: 'A-01', size: 9,  type: 'Standard', status: 'Available', price: 'SAR 8,000',  event: 'Tech Expo 2024'           },
@@ -37,6 +40,15 @@ const tdStyle = {
   borderBottom: '1px solid #F9FAFB', verticalAlign: 'middle',
 };
 
+function DonutCenterLabel({ cx, cy, total }) {
+  return (
+    <text textAnchor="middle" dominantBaseline="central">
+      <tspan x={cx} dy="-6" fontSize="20" fontWeight="700" fill="#111827">{total}</tspan>
+      <tspan x={cx} dy="18" fontSize="10" fill="#6B7280">Booths</tspan>
+    </text>
+  );
+}
+
 export default function Booths() {
   const navigate = useNavigate();
   const shouldReduce = useReducedMotion();
@@ -63,7 +75,15 @@ export default function Booths() {
   if (checking) return null;
 
   const available = BOOTHS.filter(b => b.status === 'Available').length;
-  const booked    = BOOTHS.filter(b => b.status === 'Booked' || b.status === 'Reserved').length;
+  const reserved  = BOOTHS.filter(b => b.status === 'Reserved').length;
+  const booked    = BOOTHS.filter(b => b.status === 'Booked').length;
+  const total     = BOOTHS.length;
+
+  const donutData = [
+    { name: 'Available', value: available, color: '#22C55E' },
+    { name: 'Booked',    value: booked,    color: '#FF5F29' },
+    { name: 'Reserved',  value: reserved,  color: '#6366F1' },
+  ];
 
   const filtered = BOOTHS.filter(b => {
     const q = search.toLowerCase();
@@ -77,27 +97,69 @@ export default function Booths() {
       <TopBar title="Booths" rightContent={null} />
       <div style={{ padding: '32px', background: '#F8F9FA', flex: 1 }}>
 
-        {/* Summary cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
-          {[
-            { label: 'Total Booths', value: BOOTHS.length },
-            { label: 'Available',    value: available      },
-            { label: 'Booked',       value: booked         },
-          ].map(({ label, value }, i) => (
-            <motion.div
-              key={label}
-              style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
-              initial={shouldReduce ? false : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.1 }}
-              whileHover={shouldReduce ? {} : { scale: 1.02, transition: { duration: 0.2 } }}
-            >
-              <p style={{ fontSize: '11px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
-                {label}
-              </p>
-              <p style={{ fontSize: '28px', fontWeight: '700', color: '#111827' }}>{value}</p>
-            </motion.div>
-          ))}
+        {/* Summary cards + Donut chart — 2/3 + 1/3 layout */}
+        <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+
+          {/* Left: summary cards (2/3) */}
+          <div style={{ flex: '2', minWidth: '220px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+            {[
+              { label: 'Total Booths', value: total     },
+              { label: 'Available',    value: available  },
+              { label: 'Booked',       value: booked + reserved },
+            ].map(({ label, value }, i) => (
+              <motion.div
+                key={label}
+                style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+                initial={shouldReduce ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.1 }}
+                whileHover={shouldReduce ? {} : { scale: 1.02, transition: { duration: 0.2 } }}
+              >
+                <p style={{ fontSize: '11px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
+                  {label}
+                </p>
+                <p style={{ fontSize: '28px', fontWeight: '700', color: '#111827' }}>{value}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Right: donut chart (1/3) */}
+          <div style={{ flex: '1', minWidth: '200px', background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+            <p style={{ fontSize: '13px', fontWeight: '600', color: '#111111', marginBottom: '12px' }}>Status Breakdown</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              <div style={{ width: 120, height: 120, flexShrink: 0 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={donutData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={36}
+                      outerRadius={52}
+                      dataKey="value"
+                      strokeWidth={0}
+                      label={false}
+                      labelLine={false}
+                    >
+                      {donutData.map((entry, i) => (
+                        <Cell key={i} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <DonutCenterLabel cx={60} cy={60} total={total} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {donutData.map(entry => (
+                  <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: entry.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: '12px', color: '#6B7280', minWidth: '60px' }}>{entry.name}</span>
+                    <span style={{ fontSize: '12px', fontWeight: '700', color: '#111827' }}>{entry.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Filters */}
