@@ -45,7 +45,7 @@ function KpiCard({ card, index, shouldReduce }) {
 
   return (
     <motion.div
-      className="bg-white border border-outline-variant p-4 flex flex-col justify-between rounded-xl shadow-sm"
+      className="bg-white border border-outline-variant p-4 flex flex-col rounded-xl shadow-sm"
       initial={shouldReduce ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut', delay: index * 0.1 }}
@@ -66,9 +66,9 @@ function KpiCard({ card, index, shouldReduce }) {
         </div>
       )}
 
-      {/* Sparkline — sits below subtitle, never overlapping text */}
+      {/* Sparkline — sits below subtitle text, marginTop 8px, no overlap */}
       {card.sparkline && (
-        <div style={{ width: '100%', height: 36, marginTop: 8, position: 'relative', opacity: 0.8 }}>
+        <div style={{ width: '100%', height: 36, marginTop: '8px', flexShrink: 0, opacity: 0.8 }}>
           <ResponsiveContainer width="100%" height={36}>
             <LineChart data={card.sparkline} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
               <Line

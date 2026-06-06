@@ -54,13 +54,21 @@ const sectionTitle = {
   margin: 0,
 };
 
-/* Custom center label rendered inside the donut */
-function DonutCenterLabel({ cx, cy }) {
+/* Absolute-positioned overlay centered inside the donut ring */
+function DonutCenterLabel() {
   return (
-    <text textAnchor="middle" dominantBaseline="central">
-      <tspan x={cx} dy="-6" fontSize="22" fontWeight="700" fill="#111827">{TOTAL_BOOTHS}</tspan>
-      <tspan x={cx} dy="20" fontSize="11" fill="#6B7280">Total Booths</tspan>
-    </text>
+    <div style={{
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      pointerEvents: 'none',
+    }}>
+      <span style={{ fontSize: '22px', fontWeight: '700', color: '#111827', lineHeight: 1 }}>{TOTAL_BOOTHS}</span>
+      <span style={{ fontSize: '11px', color: '#6B7280', marginTop: '4px' }}>Total</span>
+    </div>
   );
 }
 
@@ -108,8 +116,8 @@ export default function Dashboard() {
         <div style={cardStyle}>
           <p style={sectionTitle}>Booth Status Overview</p>
           <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '32px' }}>
-            {/* Donut — FIX 2: outerRadius=90, innerRadius=65, 200×200 */}
-            <div style={{ width: '200px', height: '200px', flexShrink: 0 }}>
+            {/* Donut with absolute-positioned center label */}
+            <div style={{ width: '200px', height: '200px', flexShrink: 0, position: 'relative' }}>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart width={200} height={200}>
                   <Pie
@@ -127,9 +135,9 @@ export default function Dashboard() {
                       <Cell key={i} fill={entry.color} />
                     ))}
                   </Pie>
-                  <DonutCenterLabel cx={100} cy={100} />
                 </PieChart>
               </ResponsiveContainer>
+              <DonutCenterLabel />
             </div>
 
             {/* Legend — FIX 1: space-between rows, left dot+label, right value */}
