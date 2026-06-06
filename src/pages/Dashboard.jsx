@@ -112,73 +112,76 @@ export default function Dashboard() {
         <InventoryOverview />
         <KpiStats />
 
-        {/* ── Chart 1: Booth Status Donut ──────────────────────── */}
-        <div style={cardStyle}>
-          <p style={sectionTitle}>Booth Status Overview</p>
-          <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '32px' }}>
-            {/* Donut with absolute-positioned center label */}
-            <div style={{ width: '200px', height: '200px', flexShrink: 0, position: 'relative' }}>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart width={200} height={200}>
-                  <Pie
-                    data={DONUT_DATA}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={65}
-                    outerRadius={90}
-                    dataKey="value"
-                    strokeWidth={0}
-                    labelLine={false}
-                    label={false}
-                  >
-                    {DONUT_DATA.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <DonutCenterLabel />
-            </div>
+        {/* ── Charts row: Booth Status + Revenue side by side ───── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
 
-            {/* Legend — FIX 1: space-between rows, left dot+label, right value */}
-            <div style={{ flex: 1, minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {DONUT_DATA.map(entry => (
-                <div key={entry.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: entry.color, flexShrink: 0 }} />
-                    <span style={{ fontSize: '14px', color: '#374151' }}>{entry.name}</span>
+          {/* Chart 1: Booth Status Donut */}
+          <div style={{ ...cardStyle, marginBottom: 0 }}>
+            <p style={sectionTitle}>Booth Status</p>
+            <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '24px' }}>
+              {/* Compact donut for half-width column */}
+              <div style={{ width: '130px', height: '130px', flexShrink: 0, position: 'relative' }}>
+                <ResponsiveContainer width="100%" height={130}>
+                  <PieChart width={130} height={130}>
+                    <Pie
+                      data={DONUT_DATA}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={42}
+                      outerRadius={60}
+                      dataKey="value"
+                      strokeWidth={0}
+                      labelLine={false}
+                      label={false}
+                    >
+                      {DONUT_DATA.map((entry, i) => (
+                        <Cell key={i} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <DonutCenterLabel />
+              </div>
+              {/* Legend */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {DONUT_DATA.map(entry => (
+                  <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: entry.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: '13px', color: '#374151' }}>{entry.name}</span>
+                    <span style={{ fontSize: '13px', fontWeight: '700', color: '#111111', marginLeft: 'auto' }}>{entry.value}</span>
                   </div>
-                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#111111' }}>{entry.value}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* ── Chart 2: Revenue Bar Chart ───────────────────────── */}
-        <div style={cardStyle}>
-          <p style={sectionTitle}>Revenue Overview</p>
-          <div style={{ marginTop: '16px' }}>
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={REVENUE_DATA} margin={{ top: 4, right: 8, left: 8, bottom: 0 }} barCategoryGap="35%">
-                <CartesianGrid vertical={false} stroke="#F3F4F6" />
-                <XAxis
-                  dataKey="month"
-                  tick={{ fontSize: 11, fill: '#9CA3AF' }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 11, fill: '#9CA3AF' }}
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={v => v === 0 ? '0' : `${(v / 1000).toFixed(0)}k`}
-                />
-                <Tooltip content={<RevenueTooltip />} cursor={{ fill: 'rgba(255,95,41,0.05)' }} />
-                <Bar dataKey="sar" fill="#FF5F29" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          {/* Chart 2: Revenue Bar Chart */}
+          <div style={{ ...cardStyle, marginBottom: 0 }}>
+            <p style={sectionTitle}>Revenue Overview</p>
+            <div style={{ marginTop: '16px' }}>
+              <ResponsiveContainer width="100%" height={160}>
+                <BarChart data={REVENUE_DATA} margin={{ top: 4, right: 4, left: 0, bottom: 0 }} barCategoryGap="35%">
+                  <CartesianGrid vertical={false} stroke="#F3F4F6" />
+                  <XAxis
+                    dataKey="month"
+                    tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                    axisLine={false}
+                    tickLine={false}
+                    tickFormatter={v => v === 0 ? '0' : `${(v / 1000).toFixed(0)}k`}
+                    width={28}
+                  />
+                  <Tooltip content={<RevenueTooltip />} cursor={{ fill: 'rgba(255,95,41,0.05)' }} />
+                  <Bar dataKey="sar" fill="#FF5F29" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
+
         </div>
 
         <YourEvents />
