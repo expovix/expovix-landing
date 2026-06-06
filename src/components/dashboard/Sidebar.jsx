@@ -58,18 +58,27 @@ export default function Sidebar() {
       {/* Logo */}
       <div
         style={{
-          height: '64px',
-          paddingLeft: '20px',
           display: 'flex',
           alignItems: 'center',
+          gap: '10px',
+          height: '64px',
+          paddingLeft: '20px',
           borderBottom: '1px solid rgba(255,255,255,0.08)',
         }}
       >
         <img
           src="/assets/logo/main-logo.png"
           alt="ExpoVix"
-          style={{ height: '32px', width: 'auto' }}
+          style={{ width: '28px', height: '28px', objectFit: 'contain' }}
         />
+        <div>
+          <p style={{ fontSize: '15px', fontWeight: '700', color: '#ffffff', letterSpacing: '-0.3px', margin: 0 }}>
+            ExpoVix
+          </p>
+          <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+            Exhibition Platform
+          </p>
+        </div>
       </div>
 
       {/* Nav links */}

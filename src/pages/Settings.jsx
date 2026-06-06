@@ -28,6 +28,7 @@ const fieldStyle  = { marginBottom: '16px' };
 const cardStyle   = {
   background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px',
   padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', flex: '1 1 300px',
+  alignSelf: 'flex-start',
 };
 const cardTitle   = { fontSize: '15px', fontWeight: '700', color: '#111827', marginBottom: '20px' };
 const orangeBtn   = {
@@ -73,7 +74,7 @@ export default function Settings() {
     <DashboardLayout>
       <TopBar title="Settings" rightContent={null} />
       <div style={{ padding: '32px', background: '#F8F9FA', flex: 1 }}>
-        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', flexWrap: 'wrap' }}>
 
           {/* Profile Card */}
           <div style={cardStyle}>
