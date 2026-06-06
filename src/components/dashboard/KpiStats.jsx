@@ -66,10 +66,10 @@ function KpiCard({ card, index, shouldReduce }) {
         </div>
       )}
 
-      {/* Sparkline — bottom-right of card, Revenue Collected and Collection Rate only */}
+      {/* Sparkline — sits below subtitle, never overlapping text */}
       {card.sparkline && (
-        <div style={{ width: '100%', height: 32, marginTop: 8 }}>
-          <ResponsiveContainer width="100%" height={32}>
+        <div style={{ width: '100%', height: 36, marginTop: 8, position: 'relative', opacity: 0.8 }}>
+          <ResponsiveContainer width="100%" height={36}>
             <LineChart data={card.sparkline} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
               <Line
                 type="monotone"
