@@ -108,16 +108,16 @@ export default function Dashboard() {
         <div style={cardStyle}>
           <p style={sectionTitle}>Booth Status Overview</p>
           <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '32px' }}>
-            {/* Donut */}
-            <div style={{ width: '160px', height: '160px', flexShrink: 0 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+            {/* Donut — FIX 2: outerRadius=90, innerRadius=65, 200×200 */}
+            <div style={{ width: '200px', height: '200px', flexShrink: 0 }}>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart width={200} height={200}>
                   <Pie
                     data={DONUT_DATA}
                     cx="50%"
                     cy="50%"
-                    innerRadius={44}
-                    outerRadius={66}
+                    innerRadius={65}
+                    outerRadius={90}
                     dataKey="value"
                     strokeWidth={0}
                     labelLine={false}
@@ -127,18 +127,20 @@ export default function Dashboard() {
                       <Cell key={i} fill={entry.color} />
                     ))}
                   </Pie>
-                  <DonutCenterLabel cx={80} cy={80} />
+                  <DonutCenterLabel cx={100} cy={100} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
-            {/* Legend */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {/* Legend — FIX 1: space-between rows, left dot+label, right value */}
+            <div style={{ flex: 1, minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {DONUT_DATA.map(entry => (
-                <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: entry.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: '14px', color: '#374151' }}>{entry.name}</span>
-                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#111111', marginLeft: 'auto' }}>{entry.value}</span>
+                <div key={entry.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: entry.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: '14px', color: '#374151' }}>{entry.name}</span>
+                  </div>
+                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#111111' }}>{entry.value}</span>
                 </div>
               ))}
             </div>
@@ -149,7 +151,7 @@ export default function Dashboard() {
         <div style={cardStyle}>
           <p style={sectionTitle}>Revenue Overview</p>
           <div style={{ marginTop: '16px' }}>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={180}>
               <BarChart data={REVENUE_DATA} margin={{ top: 4, right: 8, left: 8, bottom: 0 }} barCategoryGap="35%">
                 <CartesianGrid vertical={false} stroke="#F3F4F6" />
                 <XAxis
