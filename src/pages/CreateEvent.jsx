@@ -87,14 +87,8 @@ export default function CreateEvent() {
       <div style={{ padding: '32px', background: '#F8F9FA', flex: 1 }}>
 
         {/* Page header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div style={{ marginBottom: '24px' }}>
           <h1 style={{ fontSize: '24px', fontWeight: '600', color: '#111111', margin: 0 }}>Create Event</h1>
-          <span
-            onClick={() => navigate('/my-events')}
-            style={{ fontSize: '14px', color: '#6B7280', cursor: 'pointer', textDecoration: 'none' }}
-          >
-            Cancel
-          </span>
         </div>
 
         <div style={{
