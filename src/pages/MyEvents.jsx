@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
@@ -22,6 +23,7 @@ const STATUS_COLORS = {
 
 export default function MyEvents() {
   const navigate = useNavigate();
+  const shouldReduce = useReducedMotion();
   const [checking, setChecking] = useState(true);
   const [search, setSearch] = useState('');
 
@@ -112,18 +114,25 @@ export default function MyEvents() {
             gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
             gap: '16px',
           }}>
-            {filtered.map(event => {
+            {filtered.map((event, i) => {
               const pct = event.total > 0 ? Math.round((event.booked / event.total) * 100) : 0;
               return (
-                <div
+                <motion.div
                   key={event.id}
                   style={{
                     background: 'white', borderRadius: '12px', padding: '20px',
                     border: '1px solid #F3F4F6', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-                    cursor: 'pointer', transition: 'box-shadow 0.15s ease',
+                    cursor: 'pointer',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }}
+                  initial={shouldReduce ? false : { opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.08 }}
+                  whileHover={shouldReduce ? {} : {
+                    y: -4,
+                    boxShadow: '0 12px 32px rgba(255,95,41,0.15)',
+                    borderColor: '#FF5F29',
+                    transition: { type: 'spring', stiffness: 260, damping: 20 },
+                  }}
                 >
                   {/* Name + badge */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
@@ -160,7 +169,7 @@ export default function MyEvents() {
                     <Calendar size={12} />
                     {event.dates}
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>

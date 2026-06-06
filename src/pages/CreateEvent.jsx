@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
@@ -31,7 +32,8 @@ const rowStyle   = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px
 const fieldStyle = { marginBottom: '20px' };
 
 export default function CreateEvent() {
-  const navigate = useNavigate();
+  const navigate     = useNavigate();
+  const shouldReduce = useReducedMotion();
   const [checking, setChecking] = useState(true);
   const [form, setForm] = useState({
     name: '', venue: '', city: '', country: '', type: '',
@@ -91,24 +93,29 @@ export default function CreateEvent() {
           <h1 style={{ fontSize: '24px', fontWeight: '600', color: '#111111', margin: 0 }}>Create Event</h1>
         </div>
 
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-          border: '1px solid #F3F4F6',
-          padding: '32px',
-          maxWidth: '800px',
-          margin: '0 auto',
-        }}>
+        <motion.div
+          style={{
+            background: 'white',
+            borderRadius: '12px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+            border: '1px solid #F3F4F6',
+            padding: '32px',
+            maxWidth: '800px',
+            margin: '0 auto',
+          }}
+          initial={shouldReduce ? false : { opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
 
           {/* Row 1: Event Name */}
-          <div style={fieldStyle}>
+          <motion.div style={fieldStyle} initial={shouldReduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1, duration: 0.3 }}>
             <label style={labelStyle}>Event Name</label>
             <input type="text" placeholder="e.g. Tech Expo 2025" {...handlers('name')} />
-          </div>
+          </motion.div>
 
           {/* Row 2: Venue | City */}
-          <div style={rowStyle}>
+          <motion.div style={rowStyle} initial={shouldReduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15, duration: 0.3 }}>
             <div>
               <label style={labelStyle}>Venue Name</label>
               <input type="text" placeholder="e.g. ExCeL London" {...handlers('venue')} />
@@ -117,10 +124,10 @@ export default function CreateEvent() {
               <label style={labelStyle}>City</label>
               <input type="text" placeholder="e.g. London" {...handlers('city')} />
             </div>
-          </div>
+          </motion.div>
 
           {/* Row 3: Country | Event Type */}
-          <div style={rowStyle}>
+          <motion.div style={rowStyle} initial={shouldReduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.3 }}>
             <div>
               <label style={labelStyle}>Country</label>
               <input type="text" placeholder="e.g. United Kingdom" {...handlers('country')} />
@@ -142,10 +149,10 @@ export default function CreateEvent() {
                 <option>Corporate Event</option>
               </select>
             </div>
-          </div>
+          </motion.div>
 
           {/* Row 4: Start Date | End Date */}
-          <div style={rowStyle}>
+          <motion.div style={rowStyle} initial={shouldReduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25, duration: 0.3 }}>
             <div>
               <label style={labelStyle}>Start Date</label>
               <input type="date" {...handlers('startDate')} />
@@ -154,10 +161,10 @@ export default function CreateEvent() {
               <label style={labelStyle}>End Date</label>
               <input type="date" {...handlers('endDate')} />
             </div>
-          </div>
+          </motion.div>
 
           {/* Row 5: Total Booths | Ticket Price */}
-          <div style={rowStyle}>
+          <motion.div style={rowStyle} initial={shouldReduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 0.3 }}>
             <div>
               <label style={labelStyle}>Total Booths</label>
               <input type="number" min="1" placeholder="e.g. 60" {...handlers('booths')} />
@@ -166,10 +173,10 @@ export default function CreateEvent() {
               <label style={labelStyle}>Ticket Price in SAR <span style={{ fontWeight: '400', textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
               <input type="number" min="0" placeholder="e.g. 5000" {...handlers('price')} />
             </div>
-          </div>
+          </motion.div>
 
           {/* Row 6: Description */}
-          <div style={fieldStyle}>
+          <motion.div style={fieldStyle} initial={shouldReduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35, duration: 0.3 }}>
             <label style={labelStyle}>Description <span style={{ fontWeight: '400', textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
             <textarea
               rows={4}
@@ -180,10 +187,15 @@ export default function CreateEvent() {
               onBlur={() => setFocused('')}
               style={{ ...focusStyle('description'), resize: 'vertical', fontFamily: 'inherit' }}
             />
-          </div>
+          </motion.div>
 
           {/* Buttons */}
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginTop: '8px' }}>
+          <motion.div
+            style={{ display: 'flex', gap: '12px', alignItems: 'center', marginTop: '8px' }}
+            initial={shouldReduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.3 }}
+          >
             <button
               onClick={() => navigate('/my-events')}
               style={{
@@ -211,9 +223,9 @@ export default function CreateEvent() {
             >
               Cancel
             </button>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
       </div>
     </DashboardLayout>
   );

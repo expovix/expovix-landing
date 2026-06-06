@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
@@ -34,6 +35,7 @@ const tdStyle = {
 
 export default function Bookings() {
   const navigate = useNavigate();
+  const shouldReduce = useReducedMotion();
   const [checking, setChecking] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -99,13 +101,20 @@ export default function Bookings() {
 
         {/* Summary cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
-          {summaryCards.map(({ label, value }) => (
-            <div key={label} style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+          {summaryCards.map(({ label, value }, i) => (
+            <motion.div
+              key={label}
+              style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+              initial={shouldReduce ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.1 }}
+              whileHover={shouldReduce ? {} : { scale: 1.02, transition: { duration: 0.2 } }}
+            >
               <p style={{ fontSize: '11px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
                 {label}
               </p>
               <p style={{ fontSize: '28px', fontWeight: '700', color: '#111827' }}>{value}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -147,9 +156,12 @@ export default function Bookings() {
               </thead>
               <tbody>
                 {filtered.map((row, i) => (
-                  <tr
+                  <motion.tr
                     key={i}
-                    style={{ transition: 'background 0.1s ease', cursor: 'default' }}
+                    initial={shouldReduce ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.25, ease: 'easeOut', delay: i * 0.03 }}
+                    style={{ cursor: 'default' }}
                     onMouseEnter={e => { e.currentTarget.style.background = '#FFF7F5'; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                   >
@@ -167,7 +179,7 @@ export default function Bookings() {
                     </td>
                     <td style={{ ...tdStyle, fontWeight: '500' }}>{row.amount}</td>
                     <td style={{ ...tdStyle, color: '#9CA3AF' }}>{row.date}</td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
