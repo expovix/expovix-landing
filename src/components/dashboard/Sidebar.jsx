@@ -85,15 +85,10 @@ export default function Sidebar() {
 
       {/* Nav links */}
       <div className="flex-1 flex flex-col gap-1 mt-4">
-        {nav.map(({ label, icon: Icon, to }, idx) => (
+        {nav.map(({ label, icon: Icon, to }) => (
           <NavLink key={to} to={to}>
             {({ isActive }) => (
-              <motion.div
-                initial={shouldReduce ? false : { opacity: 0, x: -15 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, ease: 'easeOut', delay: idx * 0.06 }}
-                style={{ position: 'relative', margin: '0 8px' }}
-              >
+              <div style={{ position: 'relative', margin: '0 8px' }}>
                 {/* Animated active indicator with layoutId */}
                 {isActive && (
                   <motion.div
@@ -152,7 +147,7 @@ export default function Sidebar() {
                   />
                   {label}
                 </div>
-              </motion.div>
+              </div>
             )}
           </NavLink>
         ))}
