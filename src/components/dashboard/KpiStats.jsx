@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import {
+  LineChart, Line, ResponsiveContainer,
+} from 'recharts';
+
+const REVENUE_SPARKLINE = [0,0,45,82,128,95,0,0,142,168,0,0].map((v, i) => ({ v }));
+const RATE_SPARKLINE    = [0,0,12,24,38,28,0,0,42,51,0,0].map((v, i)    => ({ v }));
 
 const cards = [
-  { label: 'Total Booths',      value: '59',    numeric: 59,  prefix: '',     suffix: '',  sub: 'Available inventory',    showBar: false },
-  { label: 'Confirmed',         value: '0',     numeric: 0,   prefix: '',     suffix: '',  sub: 'Signed contracts',        showBar: false },
-  { label: 'Reserved',         value: '0',     numeric: 0,   prefix: '',     suffix: '',  sub: 'Deposits pending',        showBar: false },
-  { label: 'Available',         value: '59',    numeric: 59,  prefix: '',     suffix: '',  sub: 'Open for sale — 0% sold', showBar: true,  barPct: 0 },
-  { label: 'Revenue Collected', value: 'SAR 0', numeric: 0,   prefix: 'SAR ', suffix: '',  sub: 'Payments received',       showBar: false },
-  { label: 'Collection Rate',   value: '0%',    numeric: 0,   prefix: '',     suffix: '%', sub: 'Payment progress',        showBar: true,  barPct: 0 },
+  { label: 'Total Booths',      value: '59',    numeric: 59, prefix: '',     suffix: '',  sub: 'Available inventory',    showBar: false, sparkline: null },
+  { label: 'Confirmed',         value: '0',     numeric: 0,  prefix: '',     suffix: '',  sub: 'Signed contracts',        showBar: false, sparkline: null },
+  { label: 'Reserved',          value: '0',     numeric: 0,  prefix: '',     suffix: '',  sub: 'Deposits pending',        showBar: false, sparkline: null },
+  { label: 'Available',         value: '59',    numeric: 59, prefix: '',     suffix: '',  sub: 'Open for sale — 0% sold', showBar: true,  barPct: 0, sparkline: null },
+  { label: 'Revenue Collected', value: 'SAR 0', numeric: 0,  prefix: 'SAR ', suffix: '',  sub: 'Payments received',       showBar: false, sparkline: REVENUE_SPARKLINE, sparkColor: '#FF5F29' },
+  { label: 'Collection Rate',   value: '0%',    numeric: 0,  prefix: '',     suffix: '%', sub: 'Payment progress',        showBar: true,  barPct: 0, sparkline: RATE_SPARKLINE, sparkColor: '#22C55E' },
 ];
 
 function useCountUp(target, duration = 1200, enabled = true) {
@@ -19,7 +25,6 @@ function useCountUp(target, duration = 1200, enabled = true) {
     function tick(now) {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
-      // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       setCount(Math.round(eased * target));
       if (progress < 1) raf = requestAnimationFrame(tick);
@@ -54,9 +59,28 @@ function KpiCard({ card, index, shouldReduce }) {
       <p className="text-[11px] font-semibold text-secondary uppercase tracking-wide mb-2">{card.label}</p>
       <p className="text-[28px] leading-tight text-on-surface font-bold tracking-tight">{displayValue}</p>
       <p className="text-[12px] font-normal text-secondary mt-1">{card.sub}</p>
+
       {card.showBar && pct > 0 && (
         <div className="bg-surface-variant h-1.5 rounded-full mt-2">
           <div className="bg-[#FF5F29] h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+        </div>
+      )}
+
+      {/* Sparkline — bottom-right of card, Revenue Collected and Collection Rate only */}
+      {card.sparkline && (
+        <div style={{ width: '100%', height: 32, marginTop: 8 }}>
+          <ResponsiveContainer width="100%" height={32}>
+            <LineChart data={card.sparkline} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
+              <Line
+                type="monotone"
+                dataKey="v"
+                stroke={card.sparkColor}
+                strokeWidth={2}
+                dot={false}
+                isAnimationActive={!shouldReduce}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       )}
     </motion.div>
