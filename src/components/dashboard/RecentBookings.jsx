@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 const rows = [
   { company: 'Global Innovations Inc.',          event: 'Tech Expo 2024',           booth: 'A-12', category: 'Exhibitor', sqm: 12, amount: 'SAR 15,000', status: 'CONFIRMED' },
@@ -10,32 +11,26 @@ const rows = [
 
 function StatusBadge({ status }) {
   if (status === 'CONFIRMED') {
-    return (
-      <span className="bg-on-surface text-white px-2 py-0.5 text-[10px] font-bold uppercase rounded-xl">
-        {status}
-      </span>
-    );
+    return <span className="bg-on-surface text-white px-2 py-0.5 text-[10px] font-bold uppercase rounded-xl">{status}</span>;
   }
   if (status === 'PENDING') {
-    return (
-      <span className="bg-[#FF5F29] text-white px-2 py-0.5 text-[10px] font-bold uppercase rounded-xl">
-        {status}
-      </span>
-    );
+    return <span className="bg-[#FF5F29] text-white px-2 py-0.5 text-[10px] font-bold uppercase rounded-xl">{status}</span>;
   }
-  return (
-    <span className="border border-[#FF5F29] text-[#FF5F29] px-2 py-0.5 text-[10px] font-bold uppercase rounded-xl">
-      {status}
-    </span>
-  );
+  return <span className="border border-[#FF5F29] text-[#FF5F29] px-2 py-0.5 text-[10px] font-bold uppercase rounded-xl">{status}</span>;
 }
 
 export default function RecentBookings() {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 1;
+  const shouldReduce = useReducedMotion();
 
   return (
-    <div className="bg-white border border-outline-variant flex flex-col rounded-xl shadow-sm overflow-hidden">
+    <motion.div
+      className="bg-white border border-outline-variant flex flex-col rounded-xl shadow-sm overflow-hidden"
+      initial={shouldReduce ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
+    >
       <div className="p-4 border-b border-outline-variant flex justify-between items-center">
         <h2 className="text-[20px] font-bold text-on-surface">Recent Bookings</h2>
         <button className="text-[#FF5F29] font-bold text-[14px]">View All</button>
@@ -53,7 +48,13 @@ export default function RecentBookings() {
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={i} className="hover:bg-surface-container-low transition-colors">
+            <motion.tr
+              key={i}
+              initial={shouldReduce ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, ease: 'easeOut', delay: 0.4 + i * 0.04 }}
+              whileHover={shouldReduce ? {} : { backgroundColor: 'rgba(255,95,41,0.04)' }}
+            >
               <td className="p-2 px-[8px]">
                 <p className="font-bold text-on-surface truncate">{row.company}</p>
                 <p className="text-[10px] text-secondary">{row.event}</p>
@@ -63,7 +64,7 @@ export default function RecentBookings() {
               <td className="p-2 px-[8px] text-on-surface">{row.sqm} sqm</td>
               <td className="p-2 px-[8px] text-on-surface">{row.amount}</td>
               <td className="p-2 px-[8px]"><StatusBadge status={row.status} /></td>
-            </tr>
+            </motion.tr>
           ))}
         </tbody>
       </table>
@@ -73,11 +74,7 @@ export default function RecentBookings() {
           <button
             disabled={currentPage === 1}
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            className={`font-bold transition-colors ${
-              currentPage === 1
-                ? 'opacity-40 cursor-not-allowed'
-                : 'hover:text-[#FF5F29]'
-            }`}
+            className={`font-bold transition-colors ${currentPage === 1 ? 'opacity-40 cursor-not-allowed' : 'hover:text-[#FF5F29]'}`}
           >
             Prev
           </button>
@@ -89,6 +86,6 @@ export default function RecentBookings() {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

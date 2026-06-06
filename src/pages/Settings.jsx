@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
@@ -38,8 +39,9 @@ const orangeBtn   = {
 };
 
 export default function Settings() {
-  const navigate  = useNavigate();
-  const { user }  = useAuth();
+  const navigate     = useNavigate();
+  const { user }     = useAuth();
+  const shouldReduce = useReducedMotion();
   const [checking, setChecking] = useState(true);
   const [fullName, setFullName] = useState('');
   const fileInputRef = useRef(null);
@@ -77,7 +79,12 @@ export default function Settings() {
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', flexWrap: 'wrap' }}>
 
           {/* Profile Card */}
-          <div style={cardStyle}>
+          <motion.div
+            style={cardStyle}
+            initial={shouldReduce ? false : { opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+          >
             <h2 style={cardTitle}>Profile</h2>
 
             {/* Avatar row */}
@@ -161,10 +168,15 @@ export default function Settings() {
             >
               Save Changes
             </button>
-          </div>
+          </motion.div>
 
           {/* Security Card */}
-          <div style={cardStyle}>
+          <motion.div
+            style={cardStyle}
+            initial={shouldReduce ? false : { opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
+          >
             <h2 style={cardTitle}>Security</h2>
 
             <div style={fieldStyle}>
@@ -187,7 +199,7 @@ export default function Settings() {
             >
               Update Password
             </button>
-          </div>
+          </motion.div>
 
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
@@ -38,6 +39,7 @@ const tdStyle = {
 
 export default function Booths() {
   const navigate = useNavigate();
+  const shouldReduce = useReducedMotion();
   const [checking, setChecking] = useState(true);
   const [search, setSearch] = useState('');
   const [eventFilter, setEventFilter] = useState('All Events');
@@ -81,13 +83,20 @@ export default function Booths() {
             { label: 'Total Booths', value: BOOTHS.length },
             { label: 'Available',    value: available      },
             { label: 'Booked',       value: booked         },
-          ].map(({ label, value }) => (
-            <div key={label} style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+          ].map(({ label, value }, i) => (
+            <motion.div
+              key={label}
+              style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}
+              initial={shouldReduce ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: 'easeOut', delay: i * 0.1 }}
+              whileHover={shouldReduce ? {} : { scale: 1.02, transition: { duration: 0.2 } }}
+            >
               <p style={{ fontSize: '11px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
                 {label}
               </p>
               <p style={{ fontSize: '28px', fontWeight: '700', color: '#111827' }}>{value}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -129,9 +138,12 @@ export default function Booths() {
               </thead>
               <tbody>
                 {filtered.map((row, i) => (
-                  <tr
+                  <motion.tr
                     key={i}
-                    style={{ transition: 'background 0.1s ease', cursor: 'default' }}
+                    initial={shouldReduce ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.25, ease: 'easeOut', delay: i * 0.03 }}
+                    style={{ cursor: 'default' }}
                     onMouseEnter={e => { e.currentTarget.style.background = '#FFF7F5'; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
                   >
@@ -149,7 +161,7 @@ export default function Booths() {
                     </td>
                     <td style={{ ...tdStyle, fontWeight: '500' }}>{row.price}</td>
                     <td style={{ ...tdStyle, color: '#9CA3AF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>{row.event}</td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>

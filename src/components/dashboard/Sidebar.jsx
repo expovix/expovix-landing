@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, CalendarDays, Grid2x2, ClipboardList, Settings } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '../../lib/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -22,6 +23,7 @@ function getInitials(str) {
 export default function Sidebar() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const shouldReduce = useReducedMotion();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -83,52 +85,74 @@ export default function Sidebar() {
 
       {/* Nav links */}
       <div className="flex-1 flex flex-col gap-1 mt-4">
-        {nav.map(({ label, icon: Icon, to }) => (
-          <NavLink
-            key={to}
-            to={to}
-          >
+        {nav.map(({ label, icon: Icon, to }, idx) => (
+          <NavLink key={to} to={to}>
             {({ isActive }) => (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '8px 12px',
-                  margin: '0 8px',
-                  borderRadius: '8px',
-                  borderLeft: isActive ? '3px solid #FF5F29' : '3px solid transparent',
-                  background: isActive ? 'rgba(255,95,41,0.15)' : 'transparent',
-                  color: isActive ? '#ffffff' : 'rgba(255,255,255,0.6)',
-                  fontWeight: isActive ? '600' : '400',
-                  fontSize: '13px',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  textDecoration: 'none',
-                }}
-                onMouseEnter={e => {
-                  if (!isActive) {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.9)';
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                  }
-                }}
-                onMouseLeave={e => {
-                  if (!isActive) {
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
-                    e.currentTarget.style.background = 'transparent';
-                  }
-                }}
+              <motion.div
+                initial={shouldReduce ? false : { opacity: 0, x: -15 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut', delay: idx * 0.06 }}
+                style={{ position: 'relative', margin: '0 8px' }}
               >
-                <Icon
-                  className="flex-shrink-0"
+                {/* Animated active indicator with layoutId */}
+                {isActive && (
+                  <motion.div
+                    layoutId="nav-active-indicator"
+                    style={{
+                      position: 'absolute',
+                      left: '-8px',
+                      top: '4px',
+                      bottom: '4px',
+                      width: '3px',
+                      borderRadius: '0 2px 2px 0',
+                      background: '#FF5F29',
+                    }}
+                    transition={
+                      shouldReduce
+                        ? { duration: 0 }
+                        : { type: 'spring', stiffness: 260, damping: 20 }
+                    }
+                  />
+                )}
+                <div
                   style={{
-                    width: '16px',
-                    height: '16px',
-                    color: isActive ? '#FF5F29' : 'rgba(255,255,255,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    background: isActive ? 'rgba(255,95,41,0.15)' : 'transparent',
+                    color: isActive ? '#ffffff' : 'rgba(255,255,255,0.6)',
+                    fontWeight: isActive ? '600' : '400',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                    textDecoration: 'none',
                   }}
-                />
-                {label}
-              </div>
+                  onMouseEnter={e => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.9)';
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                      e.currentTarget.style.background = 'transparent';
+                    }
+                  }}
+                >
+                  <Icon
+                    className="flex-shrink-0"
+                    style={{
+                      width: '16px',
+                      height: '16px',
+                      color: isActive ? '#FF5F29' : 'rgba(255,255,255,0.5)',
+                    }}
+                  />
+                  {label}
+                </div>
+              </motion.div>
             )}
           </NavLink>
         ))}

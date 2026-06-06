@@ -1,36 +1,75 @@
+import { useEffect, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+
 const cards = [
-  { label: 'Total Booths',      value: '59',    sub: 'Available inventory',       showBar: false },
-  { label: 'Confirmed',         value: '0',     sub: 'Signed contracts',           showBar: false },
-  { label: 'Reserved',          value: '0',     sub: 'Deposits pending',           showBar: false },
-  { label: 'Available',         value: '59',    sub: 'Open for sale — 0% sold',    showBar: true,  barPct: 0   },
-  { label: 'Revenue Collected', value: 'SAR 0', sub: 'Payments received',          showBar: false },
-  { label: 'Collection Rate',   value: '0%',    sub: 'Payment progress',           showBar: true,  barPct: 0   },
+  { label: 'Total Booths',      value: '59',    numeric: 59,  prefix: '',     suffix: '',  sub: 'Available inventory',    showBar: false },
+  { label: 'Confirmed',         value: '0',     numeric: 0,   prefix: '',     suffix: '',  sub: 'Signed contracts',        showBar: false },
+  { label: 'Reserved',         value: '0',     numeric: 0,   prefix: '',     suffix: '',  sub: 'Deposits pending',        showBar: false },
+  { label: 'Available',         value: '59',    numeric: 59,  prefix: '',     suffix: '',  sub: 'Open for sale — 0% sold', showBar: true,  barPct: 0 },
+  { label: 'Revenue Collected', value: 'SAR 0', numeric: 0,   prefix: 'SAR ', suffix: '',  sub: 'Payments received',       showBar: false },
+  { label: 'Collection Rate',   value: '0%',    numeric: 0,   prefix: '',     suffix: '%', sub: 'Payment progress',        showBar: true,  barPct: 0 },
 ];
 
+function useCountUp(target, duration = 1200, enabled = true) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!enabled || target === 0) { setCount(target); return; }
+    const start = performance.now();
+    let raf;
+    function tick(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration, enabled]);
+  return count;
+}
+
+function KpiCard({ card, index, shouldReduce }) {
+  const count = useCountUp(card.numeric, 1200, !shouldReduce);
+  const displayValue = shouldReduce
+    ? card.value
+    : `${card.prefix}${count}${card.suffix}`;
+
+  const pct = card.barPct ?? parseFloat(card.value);
+
+  return (
+    <motion.div
+      className="bg-white border border-outline-variant p-4 flex flex-col justify-between rounded-xl shadow-sm"
+      initial={shouldReduce ? false : { opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut', delay: index * 0.1 }}
+      whileHover={shouldReduce ? {} : {
+        scale: 1.02,
+        y: -3,
+        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+        transition: { duration: 0.2 },
+      }}
+    >
+      <p className="text-[11px] font-semibold text-secondary uppercase tracking-wide mb-2">{card.label}</p>
+      <p className="text-[28px] leading-tight text-on-surface font-bold tracking-tight">{displayValue}</p>
+      <p className="text-[12px] font-normal text-secondary mt-1">{card.sub}</p>
+      {card.showBar && pct > 0 && (
+        <div className="bg-surface-variant h-1.5 rounded-full mt-2">
+          <div className="bg-[#FF5F29] h-1.5 rounded-full" style={{ width: `${pct}%` }} />
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
 export default function KpiStats() {
+  const shouldReduce = useReducedMotion();
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {cards.map((card) => {
-        const pct = card.barPct ?? parseFloat(card.value);
-        return (
-          <div
-            key={card.label}
-            className="bg-white border border-outline-variant p-4 flex flex-col justify-between rounded-xl shadow-sm"
-          >
-            <p className="text-[11px] font-semibold text-secondary uppercase tracking-wide mb-2">{card.label}</p>
-            <p className="text-[28px] leading-tight text-on-surface font-bold tracking-tight">{card.value}</p>
-            <p className="text-[12px] font-normal text-secondary mt-1">{card.sub}</p>
-            {card.showBar && pct > 0 && (
-              <div className="bg-surface-variant h-1.5 rounded-full mt-2">
-                <div
-                  className="bg-[#FF5F29] h-1.5 rounded-full"
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-            )}
-          </div>
-        );
-      })}
+      {cards.map((card, i) => (
+        <KpiCard key={card.label} card={card} index={i} shouldReduce={shouldReduce} />
+      ))}
     </div>
   );
 }
