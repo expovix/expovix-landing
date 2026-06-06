@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../lib/AuthContext';
@@ -41,6 +41,7 @@ export default function Settings() {
   const { user }  = useAuth();
   const [checking, setChecking] = useState(true);
   const [fullName, setFullName] = useState('');
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     let mounted = true;
@@ -79,16 +80,52 @@ export default function Settings() {
             <h2 style={cardTitle}>Profile</h2>
 
             {/* Avatar row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-              <div style={{
-                width: '56px', height: '56px', borderRadius: '50%',
-                background: '#FF5F29', color: 'white',
-                fontSize: '18px', fontWeight: '700',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-              }}>
-                {initials}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
+              {/* Avatar with camera overlay */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  {/* Circle */}
+                  <div style={{
+                    width: '80px', height: '80px', borderRadius: '50%',
+                    background: '#FF5F29', color: 'white',
+                    fontSize: '28px', fontWeight: '700',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    {initials}
+                  </div>
+                  {/* Camera overlay */}
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{
+                      position: 'absolute', bottom: 0, right: 0,
+                      width: '26px', height: '26px', borderRadius: '50%',
+                      background: 'white', border: '2px solid #e5e7eb',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF5F29" strokeWidth="2.5">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                      <circle cx="12" cy="13" r="4"/>
+                    </svg>
+                  </div>
+                </div>
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                />
+                {/* Upload text */}
+                <span
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ fontSize: '12px', color: '#6b7280', cursor: 'pointer' }}
+                >
+                  Upload Photo
+                </span>
               </div>
+              {/* Name / role */}
               <div>
                 <p style={{ fontSize: '14px', fontWeight: '600', color: '#111827' }}>
                   {user?.user_metadata?.full_name || email}

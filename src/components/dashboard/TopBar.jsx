@@ -10,17 +10,17 @@ function getGreeting() {
   return 'Good evening';
 }
 
-function getFirstName(user) {
+const getFirstName = (user) => {
+  if (!user) return 'there';
   const fullName = user?.user_metadata?.full_name;
-  if (fullName) {
-    const first = fullName.trim().split(' ')[0];
-    return first.charAt(0).toUpperCase() + first.slice(1);
+  if (fullName && fullName.trim()) {
+    return fullName.trim().split(' ')[0];
   }
   const email = user?.email || '';
-  const local = email.split('@')[0];
-  if (!local) return '';
-  return local.charAt(0).toUpperCase() + local.slice(1);
-}
+  const prefix = email.split('@')[0];
+  if (!prefix) return 'there';
+  return prefix.charAt(0).toUpperCase() + prefix.slice(1).toLowerCase();
+};
 
 export default function TopBar({ title = 'Dashboard', rightContent }) {
   const navigate = useNavigate();

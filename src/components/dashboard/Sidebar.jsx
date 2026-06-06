@@ -48,13 +48,22 @@ export default function Sidebar() {
 
   return (
     <nav
-      className="hidden md:flex flex-col h-full py-6 fixed left-0 top-0 w-[240px] bg-surface border-r border-outline-variant z-20 shadow-sm"
-      style={{ borderRadius: '12px' }}
+      className="hidden md:flex flex-col h-full fixed left-0 top-0 w-[240px] z-20"
+      style={{
+        background: '#111111',
+        borderRight: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: '0',
+      }}
     >
       {/* Logo */}
       <div
-        className="flex items-center border-b border-[#e5e7eb]"
-        style={{ height: '64px', paddingLeft: '20px' }}
+        style={{
+          height: '64px',
+          paddingLeft: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+        }}
       >
         <img
           src="/assets/logo/main-logo.png"
@@ -69,27 +78,83 @@ export default function Sidebar() {
           <NavLink
             key={to}
             to={to}
-            className={({ isActive }) =>
-              isActive
-                ? 'flex items-center gap-3 border-l-4 border-[#FF5F29] bg-orange-50 text-on-surface text-[13px] font-semibold px-3 py-2'
-                : 'flex items-center gap-3 text-secondary text-[13px] font-medium px-3 py-2 hover:bg-surface-container-low transition-colors'
-            }
           >
-            <Icon className="w-4 h-4 flex-shrink-0" />
-            {label}
+            {({ isActive }) => (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '8px 12px',
+                  margin: '0 8px',
+                  borderRadius: '8px',
+                  borderLeft: isActive ? '3px solid #FF5F29' : '3px solid transparent',
+                  background: isActive ? 'rgba(255,95,41,0.15)' : 'transparent',
+                  color: isActive ? '#ffffff' : 'rgba(255,255,255,0.6)',
+                  fontWeight: isActive ? '600' : '400',
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  textDecoration: 'none',
+                }}
+                onMouseEnter={e => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.9)';
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+                    e.currentTarget.style.background = 'transparent';
+                  }
+                }}
+              >
+                <Icon
+                  className="flex-shrink-0"
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    color: isActive ? '#FF5F29' : 'rgba(255,255,255,0.5)',
+                  }}
+                />
+                {label}
+              </div>
+            )}
           </NavLink>
         ))}
       </div>
 
       {/* Bottom user section */}
-      <div className="px-6 mt-auto relative" ref={dropdownRef}>
+      <div style={{ padding: '0 16px 24px', marginTop: 'auto', position: 'relative' }} ref={dropdownRef}>
         {dropdownOpen && (
-          <div className="absolute bottom-14 left-0 right-0 mx-2 bg-white border border-outline-variant rounded-xl shadow-lg py-2 z-50">
-            <p className="text-[11px] text-secondary px-4 py-1 truncate">{email}</p>
-            <div className="border-t border-outline-variant my-1" />
+          <div style={{
+            position: 'absolute',
+            bottom: '72px',
+            left: '8px',
+            right: '8px',
+            background: '#1a1a1a',
+            border: '1px solid rgba(255,255,255,0.12)',
+            borderRadius: '10px',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+            padding: '6px',
+            zIndex: 50,
+          }}>
+            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', padding: '6px 12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {email}
+            </p>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', margin: '4px 0' }} />
             <button
               onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-surface-container-low transition-colors"
+              style={{
+                display: 'block', width: '100%', textAlign: 'left',
+                padding: '8px 12px', borderRadius: '6px',
+                fontSize: '13px', color: '#f87171',
+                background: 'transparent', border: 'none', cursor: 'pointer',
+                transition: 'background 0.1s ease',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(248,113,113,0.1)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
             >
               Log out
             </button>
@@ -98,14 +163,29 @@ export default function Sidebar() {
 
         <button
           onClick={() => setDropdownOpen((v) => !v)}
-          className="flex items-center gap-3 w-full"
+          style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            width: '100%', background: 'transparent', border: 'none',
+            cursor: 'pointer', padding: '8px',
+            borderRadius: '8px', transition: 'background 0.15s ease',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
         >
-          <div className="w-7 h-7 rounded-full bg-surface-variant flex items-center justify-center font-bold text-on-surface text-xs flex-shrink-0">
+          <div style={{
+            width: '28px', height: '28px', borderRadius: '50%',
+            background: '#FF5F29', color: 'white',
+            fontSize: '11px', fontWeight: '700',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}>
             {initials}
           </div>
-          <div className="min-w-0 text-left">
-            <p className="text-[13px] font-semibold text-on-surface truncate">{displayName}</p>
-            <p className="text-[11px] font-normal text-secondary">Event Organizer</p>
+          <div style={{ minWidth: 0, textAlign: 'left' }}>
+            <p style={{ fontSize: '13px', fontWeight: '600', color: 'rgba(255,255,255,0.7)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {displayName}
+            </p>
+            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Event Organizer</p>
           </div>
         </button>
       </div>
