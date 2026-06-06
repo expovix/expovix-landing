@@ -107,17 +107,17 @@ export default function Dashboard() {
         {/* ── Chart 1: Booth Status Donut ──────────────────────── */}
         <div style={cardStyle}>
           <p style={sectionTitle}>Booth Status Overview</p>
-          <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '40px', flexWrap: 'wrap' }}>
+          <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '32px' }}>
             {/* Donut */}
-            <div style={{ width: 200, height: 200, flexShrink: 0 }}>
+            <div style={{ width: '160px', height: '160px', flexShrink: 0 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={DONUT_DATA}
                     cx="50%"
                     cy="50%"
-                    innerRadius={55}
-                    outerRadius={80}
+                    innerRadius={44}
+                    outerRadius={66}
                     dataKey="value"
                     strokeWidth={0}
                     labelLine={false}
@@ -127,18 +127,18 @@ export default function Dashboard() {
                       <Cell key={i} fill={entry.color} />
                     ))}
                   </Pie>
-                  <DonutCenterLabel cx={100} cy={100} />
+                  <DonutCenterLabel cx={80} cy={80} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
             {/* Legend */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {DONUT_DATA.map(entry => (
-                <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ width: 10, height: 10, borderRadius: '50%', background: entry.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: '13px', color: '#6B7280', minWidth: '72px' }}>{entry.name}</span>
-                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#111827' }}>{entry.value}</span>
+                  <span style={{ fontSize: '14px', color: '#374151' }}>{entry.name}</span>
+                  <span style={{ fontSize: '14px', fontWeight: '700', color: '#111111', marginLeft: 'auto' }}>{entry.value}</span>
                 </div>
               ))}
             </div>
