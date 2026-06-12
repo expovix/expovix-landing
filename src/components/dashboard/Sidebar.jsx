@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CalendarDays, Grid2x2, ClipboardList, Settings } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Grid2x2, ClipboardList, Settings, Inbox, Wrench, Package } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '../../lib/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
@@ -9,6 +9,9 @@ const nav = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
   { label: 'My Events',  icon: CalendarDays,    to: '/my-events' },
   { label: 'Booths',     icon: Grid2x2,         to: '/booths'    },
+  { label: 'Requests',   icon: Inbox,           to: '/requests', badge: 3 },
+  { label: 'Exhibitor Services', icon: Wrench,  to: '/exhibitor-services' },
+  { label: 'Production', icon: Package,         to: '/production' },
   { label: 'Bookings',   icon: ClipboardList,   to: '/bookings'  },
   { label: 'Settings',   icon: Settings,        to: '/settings'  },
 ];
@@ -85,7 +88,7 @@ export default function Sidebar() {
 
       {/* Nav links */}
       <div className="flex-1 flex flex-col gap-1 mt-4">
-        {nav.map(({ label, icon: Icon, to }) => (
+        {nav.map(({ label, icon: Icon, to, badge }) => (
           <NavLink key={to} to={to}>
             {({ isActive }) => (
               <div style={{ position: 'relative', margin: '0 8px' }}>
@@ -146,6 +149,23 @@ export default function Sidebar() {
                     }}
                   />
                   {label}
+                  {badge != null && (
+                    <span
+                      style={{
+                        marginLeft: 'auto',
+                        background: '#FF5F29',
+                        color: '#ffffff',
+                        fontSize: '10px',
+                        fontWeight: '700',
+                        lineHeight: '14px',
+                        padding: '1px 7px',
+                        borderRadius: '999px',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {badge}
+                    </span>
+                  )}
                 </div>
               </div>
             )}
