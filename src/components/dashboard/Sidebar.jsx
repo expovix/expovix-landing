@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CalendarDays, Grid2x2, ClipboardList, Settings, Inbox, Wrench, Package } from 'lucide-react';
+import {
+  LayoutDashboard, CalendarDays, Grid2x2, ClipboardList, Settings,
+  Inbox, Wrench, Package, Users, Star, BarChart3, ChevronLeft, ChevronRight,
+} from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useAuth } from '../../lib/AuthContext';
 import { supabase } from '../../lib/supabaseClient';
@@ -12,6 +15,9 @@ const nav = [
   { label: 'Requests',   icon: Inbox,           to: '/requests', badge: 3 },
   { label: 'Exhibitor Services', icon: Wrench,  to: '/exhibitor-services' },
   { label: 'Production', icon: Package,         to: '/production' },
+  { label: 'Exhibitors', icon: Users,           to: '/exhibitors' },
+  { label: 'Sponsors',   icon: Star,            to: '/sponsors' },
+  { label: 'Analytics',  icon: BarChart3,       to: '/analytics' },
   { label: 'Bookings',   icon: ClipboardList,   to: '/bookings'  },
   { label: 'Settings',   icon: Settings,        to: '/settings'  },
 ];
@@ -23,7 +29,7 @@ function getInitials(str) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export default function Sidebar() {
+export default function Sidebar({ collapsed = false, onToggleCollapse }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const shouldReduce = useReducedMotion();
@@ -53,11 +59,14 @@ export default function Sidebar() {
 
   return (
     <nav
-      className="hidden md:flex flex-col h-full fixed left-0 top-0 w-[240px] z-20"
+      className="hidden md:flex flex-col h-full fixed left-0 top-0 z-20"
       style={{
+        width: collapsed ? '72px' : '240px',
+        transition: 'width 0.2s ease',
         background: '#111111',
         borderRight: '1px solid rgba(255,255,255,0.08)',
         borderRadius: '0',
+        overflow: 'hidden',
       }}
     >
       {/* Logo */}
@@ -74,16 +83,18 @@ export default function Sidebar() {
         <img
           src="/assets/logo/main-logo.png"
           alt="ExpoVix"
-          style={{ width: '28px', height: '28px', objectFit: 'contain' }}
+          style={{ width: '28px', height: '28px', objectFit: 'contain', flexShrink: 0 }}
         />
-        <div>
-          <p style={{ fontSize: '15px', fontWeight: '700', color: '#ffffff', letterSpacing: '-0.3px', margin: 0 }}>
-            ExpoVix
-          </p>
-          <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-            Exhibition Platform
-          </p>
-        </div>
+        {!collapsed && (
+          <div style={{ whiteSpace: 'nowrap' }}>
+            <p style={{ fontSize: '15px', fontWeight: '700', color: '#ffffff', letterSpacing: '-0.3px', margin: 0 }}>
+              ExpoVix
+            </p>
+            <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+              Exhibition Platform
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Nav links */}
@@ -91,8 +102,7 @@ export default function Sidebar() {
         {nav.map(({ label, icon: Icon, to, badge }) => (
           <NavLink key={to} to={to}>
             {({ isActive }) => (
-              <div style={{ position: 'relative', margin: '0 8px' }}>
-                {/* Animated active indicator with layoutId */}
+              <div style={{ position: 'relative', margin: '0 8px' }} title={collapsed ? label : undefined}>
                 {isActive && (
                   <motion.div
                     layoutId="nav-active-indicator"
@@ -126,6 +136,7 @@ export default function Sidebar() {
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
                     textDecoration: 'none',
+                    whiteSpace: 'nowrap',
                   }}
                   onMouseEnter={e => {
                     if (!isActive) {
@@ -148,8 +159,8 @@ export default function Sidebar() {
                       color: isActive ? '#FF5F29' : 'rgba(255,255,255,0.5)',
                     }}
                   />
-                  {label}
-                  {badge != null && (
+                  {!collapsed && label}
+                  {!collapsed && badge != null && (
                     <span
                       style={{
                         marginLeft: 'auto',
@@ -173,8 +184,27 @@ export default function Sidebar() {
         ))}
       </div>
 
+      {/* Collapse toggle */}
+      <div style={{ padding: '0 16px' }}>
+        <button
+          onClick={onToggleCollapse}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '8px',
+            width: '100%', padding: '8px 12px', marginBottom: '8px',
+            borderRadius: '8px', border: 'none', background: 'transparent',
+            color: 'rgba(255,255,255,0.5)', fontSize: '13px', cursor: 'pointer',
+            transition: 'background 0.15s ease', whiteSpace: 'nowrap',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+        >
+          {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          {!collapsed && 'Collapse'}
+        </button>
+      </div>
+
       {/* Bottom user section */}
-      <div style={{ padding: '0 16px 24px', marginTop: 'auto', position: 'relative' }} ref={dropdownRef}>
+      <div style={{ padding: '0 16px 24px', position: 'relative' }} ref={dropdownRef}>
         {dropdownOpen && (
           <div style={{
             position: 'absolute',
@@ -229,12 +259,14 @@ export default function Sidebar() {
           }}>
             {initials}
           </div>
-          <div style={{ minWidth: 0, textAlign: 'left' }}>
-            <p style={{ fontSize: '13px', fontWeight: '600', color: 'rgba(255,255,255,0.7)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {displayName}
-            </p>
-            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Event Organizer</p>
-          </div>
+          {!collapsed && (
+            <div style={{ minWidth: 0, textAlign: 'left' }}>
+              <p style={{ fontSize: '13px', fontWeight: '600', color: 'rgba(255,255,255,0.7)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {displayName}
+              </p>
+              <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Event Organizer</p>
+            </div>
+          )}
         </button>
       </div>
     </nav>
