@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../lib/AuthContext';
+import { useTheme } from '../../lib/ThemeContext';
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -25,6 +26,7 @@ const getFirstName = (user) => {
 export default function TopBar({ title = 'Dashboard', rightContent }) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [greeting, setGreeting] = useState(getGreeting());
 
   // Recalculate on mount and refresh every minute
@@ -54,7 +56,17 @@ export default function TopBar({ title = 'Dashboard', rightContent }) {
           {greeting}{firstName ? `, ${firstName}` : ''}
         </p>
       </div>
-      {rightContent !== undefined ? rightContent : defaultRight}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          className="w-9 h-9 flex items-center justify-center rounded-xl border border-outline-variant text-secondary hover:bg-black/[0.04] transition-colors"
+        >
+          {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
+        {rightContent !== undefined ? rightContent : defaultRight}
+      </div>
     </header>
   );
 }
