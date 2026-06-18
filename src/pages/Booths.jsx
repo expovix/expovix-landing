@@ -116,6 +116,7 @@ export default function Booths() {
   const [search, setSearch] = useState('');
   const [eventFilter, setEventFilter] = useState('All Events');
   const [selectedBooth, setSelectedBooth] = useState('');
+  const [selectedBooths, setSelectedBooths] = useState([]);
   const [hoveredBooth, setHoveredBooth] = useState('');
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [saveStatus, setSaveStatus] = useState('idle');
@@ -158,6 +159,35 @@ export default function Booths() {
 
   const selectedBoothData = BOOTHS.find((booth) => booth.number === selectedBooth);
   const hoveredBoothData = BOOTHS.find((booth) => booth.number === hoveredBooth);
+  const selectedCount = selectedBooths.length;
+
+  const handleBoothClick = (event, boothNumber) => {
+    if (event.metaKey || event.ctrlKey) {
+      setSelectedBooths((current) => {
+        const isAlreadySelected = current.includes(boothNumber);
+        const next = isAlreadySelected
+          ? current.filter((number) => number !== boothNumber)
+          : [...current, boothNumber];
+
+        if (isAlreadySelected && selectedBooth === boothNumber) {
+          setSelectedBooth(next.at(-1) || '');
+        } else {
+          setSelectedBooth(boothNumber);
+        }
+
+        return next;
+      });
+      return;
+    }
+
+    setSelectedBooth(boothNumber);
+    setSelectedBooths([boothNumber]);
+  };
+
+  const clearSelection = () => {
+    setSelectedBooth('');
+    setSelectedBooths([]);
+  };
 
   const handleSavePlan = () => {
     if (saveStatus === 'saving') return;
@@ -277,6 +307,34 @@ export default function Booths() {
           >
             {EVENTS.map(ev => <option key={ev}>{ev}</option>)}
           </select>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            marginLeft: 'auto',
+            color: '#6B7280',
+            fontSize: '12px',
+          }}>
+            <span>{selectedCount} selected</span>
+            {selectedCount > 0 && (
+              <button
+                type="button"
+                onClick={clearSelection}
+                style={{
+                  border: '1px solid #E5E7EB',
+                  background: 'white',
+                  color: '#374151',
+                  borderRadius: '8px',
+                  padding: '7px 12px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                }}
+              >
+                Clear Selection
+              </button>
+            )}
+          </div>
         </div>
 
         <AnimatePresence initial={false}>
@@ -361,7 +419,7 @@ export default function Booths() {
               </thead>
               <tbody>
                 {filtered.map((row, i) => {
-                  const isSelected = selectedBooth === row.number;
+                  const isSelected = selectedBooths.includes(row.number);
 
                   return (
                   <motion.tr
@@ -377,7 +435,7 @@ export default function Booths() {
                       background: isSelected ? '#FFF1EC' : 'transparent',
                       boxShadow: isSelected ? 'inset 0 0 0 1px rgba(255,95,41,0.35)' : 'none',
                     }}
-                    onClick={() => setSelectedBooth(row.number)}
+                    onClick={(event) => handleBoothClick(event, row.number)}
                     onMouseEnter={(event) => {
                       setHoveredBooth(row.number);
                       setTooltipPosition({ x: event.clientX, y: event.clientY });
