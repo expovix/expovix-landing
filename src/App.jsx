@@ -21,8 +21,18 @@ import CreateEvent from './pages/CreateEvent';
 import Requests from './pages/Requests';
 import ExhibitorServices from './pages/ExhibitorServices';
 import Production from './pages/Production';
+import Exhibitors from './pages/Exhibitors';
+import Sponsors from './pages/Sponsors';
+import Analytics from './pages/Analytics';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+  const protect = (element) => (
+    <ProtectedRoute>
+      {element}
+    </ProtectedRoute>
+  );
+
   return (
     <ThemeProvider>
       <CurrencyProvider>
@@ -36,15 +46,18 @@ function App() {
             <Route path="/register"        element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password"  element={<ResetPassword />} />
-            <Route path="/dashboard"       element={<Dashboard />} />
-            <Route path="/my-events"       element={<MyEvents />} />
-            <Route path="/booths"          element={<Booths />} />
-            <Route path="/requests"        element={<Requests />} />
-            <Route path="/exhibitor-services" element={<ExhibitorServices />} />
-            <Route path="/production"      element={<Production />} />
-            <Route path="/bookings"        element={<Bookings />} />
-            <Route path="/settings"        element={<Settings />} />
-            <Route path="/create-event"    element={<CreateEvent />} />
+            <Route path="/dashboard"       element={protect(<Dashboard />)} />
+            <Route path="/my-events"       element={protect(<MyEvents />)} />
+            <Route path="/booths"          element={protect(<Booths />)} />
+            <Route path="/requests"        element={protect(<Requests />)} />
+            <Route path="/exhibitor-services" element={protect(<ExhibitorServices />)} />
+            <Route path="/production"      element={protect(<Production />)} />
+            <Route path="/bookings"        element={protect(<Bookings />)} />
+            <Route path="/settings"        element={protect(<Settings />)} />
+            <Route path="/create-event"    element={protect(<CreateEvent />)} />
+            <Route path="/exhibitors"      element={protect(<Exhibitors />)} />
+            <Route path="/sponsors"        element={protect(<Sponsors />)} />
+            <Route path="/analytics"       element={protect(<Analytics />)} />
             <Route path="*"               element={<PageNotFound />} />
           </Routes>
         </Router>
