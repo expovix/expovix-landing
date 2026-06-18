@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
+import { Check, Loader2 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
 } from 'recharts';
@@ -55,6 +56,8 @@ export default function Booths() {
   const [checking, setChecking] = useState(true);
   const [search, setSearch] = useState('');
   const [eventFilter, setEventFilter] = useState('All Events');
+  const [selectedBooth, setSelectedBooth] = useState('');
+  const [saveStatus, setSaveStatus] = useState('idle');
 
   useEffect(() => {
     let mounted = true;
@@ -92,9 +95,34 @@ export default function Booths() {
     return matchSearch && matchEvent;
   });
 
+  const handleSavePlan = () => {
+    if (saveStatus === 'saving') return;
+
+    setSaveStatus('saving');
+    window.setTimeout(() => {
+      setSaveStatus('saved');
+      window.setTimeout(() => setSaveStatus('idle'), 1200);
+    }, 800);
+  };
+
+  const savePlanButton = (
+    <motion.button
+      type="button"
+      onClick={handleSavePlan}
+      disabled={saveStatus === 'saving'}
+      className="bg-[#FF5F29] hover:bg-[#e54e1b] disabled:opacity-80 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-xl flex items-center gap-2 text-[13px] transition-colors"
+      whileTap={shouldReduce ? {} : { scale: 0.98 }}
+      transition={{ duration: 0.15, ease: 'easeOut' }}
+    >
+      {saveStatus === 'saving' && <Loader2 className="w-4 h-4 animate-spin" />}
+      {saveStatus === 'saved' && <Check className="w-4 h-4" />}
+      {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : 'Save Plan'}
+    </motion.button>
+  );
+
   return (
     <DashboardLayout>
-      <TopBar title="Booths" rightContent={null} />
+      <TopBar title="Booths" rightContent={savePlanButton} />
       <div style={{ padding: '32px', background: '#F8F9FA', flex: 1 }}>
 
         {/* Summary cards + Donut chart — 2/3 + 1/3 layout */}
@@ -199,15 +227,25 @@ export default function Booths() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((row, i) => (
+                {filtered.map((row, i) => {
+                  const isSelected = selectedBooth === row.number;
+
+                  return (
                   <motion.tr
-                    key={i}
+                    key={row.number}
                     initial={shouldReduce ? false : { opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.25, ease: 'easeOut', delay: i * 0.03 }}
-                    style={{ cursor: 'default' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = '#FFF7F5'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                    whileHover={shouldReduce ? {} : {
+                      backgroundColor: isSelected ? '#FFF1EC' : '#FFF7F5',
+                    }}
+                    transition={{ duration: 0.18, ease: 'easeOut', delay: i * 0.01 }}
+                    style={{
+                      cursor: 'pointer',
+                      background: isSelected ? '#FFF1EC' : 'transparent',
+                      boxShadow: isSelected ? 'inset 0 0 0 1px rgba(255,95,41,0.35)' : 'none',
+                    }}
+                    onClick={() => setSelectedBooth(row.number)}
+                    aria-selected={isSelected}
                   >
                     <td style={{ ...tdStyle, fontWeight: '600', color: '#111827' }}>{row.number}</td>
                     <td style={tdStyle}>{row.size}</td>
@@ -224,7 +262,8 @@ export default function Booths() {
                     <td style={{ ...tdStyle, fontWeight: '500' }}>{row.price}</td>
                     <td style={{ ...tdStyle, color: '#9CA3AF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>{row.event}</td>
                   </motion.tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
