@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
-import { Check, CheckCircle2, CircleDot, Clock3, Loader2, X } from 'lucide-react';
+import { Check, CheckCircle2, CircleDot, Clock3, Loader2, Redo2, Undo2, X } from 'lucide-react';
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
 } from 'recharts';
@@ -109,6 +109,14 @@ function BoothTooltip({ booth, position, shouldReduce }) {
   );
 }
 
+function isSameSelectionState(first, second) {
+  return (
+    first.selectedBooth === second.selectedBooth &&
+    first.selectedBooths.length === second.selectedBooths.length &&
+    first.selectedBooths.every((booth, index) => booth === second.selectedBooths[index])
+  );
+}
+
 export default function Booths() {
   const navigate = useNavigate();
   const shouldReduce = useReducedMotion();
@@ -117,6 +125,8 @@ export default function Booths() {
   const [eventFilter, setEventFilter] = useState('All Events');
   const [selectedBooth, setSelectedBooth] = useState('');
   const [selectedBooths, setSelectedBooths] = useState([]);
+  const [undoStack, setUndoStack] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
   const [hoveredBooth, setHoveredBooth] = useState('');
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [saveStatus, setSaveStatus] = useState('idle');
@@ -160,33 +170,67 @@ export default function Booths() {
   const selectedBoothData = BOOTHS.find((booth) => booth.number === selectedBooth);
   const hoveredBoothData = BOOTHS.find((booth) => booth.number === hoveredBooth);
   const selectedCount = selectedBooths.length;
+  const canUndo = undoStack.length > 0;
+  const canRedo = redoStack.length > 0;
+
+  const commitSelection = (nextSelectedBooths, nextSelectedBooth) => {
+    const currentState = { selectedBooth, selectedBooths };
+    const nextState = {
+      selectedBooth: nextSelectedBooth,
+      selectedBooths: nextSelectedBooths,
+    };
+
+    if (isSameSelectionState(currentState, nextState)) return;
+
+    setUndoStack((current) => [...current, currentState]);
+    setRedoStack([]);
+    setSelectedBooth(nextSelectedBooth);
+    setSelectedBooths(nextSelectedBooths);
+  };
 
   const handleBoothClick = (event, boothNumber) => {
     if (event.metaKey || event.ctrlKey) {
-      setSelectedBooths((current) => {
-        const isAlreadySelected = current.includes(boothNumber);
-        const next = isAlreadySelected
-          ? current.filter((number) => number !== boothNumber)
-          : [...current, boothNumber];
+      const isAlreadySelected = selectedBooths.includes(boothNumber);
+      const nextSelectedBooths = isAlreadySelected
+        ? selectedBooths.filter((number) => number !== boothNumber)
+        : [...selectedBooths, boothNumber];
+      const nextSelectedBooth = isAlreadySelected && selectedBooth === boothNumber
+        ? nextSelectedBooths.at(-1) || ''
+        : boothNumber;
 
-        if (isAlreadySelected && selectedBooth === boothNumber) {
-          setSelectedBooth(next.at(-1) || '');
-        } else {
-          setSelectedBooth(boothNumber);
-        }
-
-        return next;
-      });
+      commitSelection(nextSelectedBooths, nextSelectedBooth);
       return;
     }
 
-    setSelectedBooth(boothNumber);
-    setSelectedBooths([boothNumber]);
+    commitSelection([boothNumber], boothNumber);
   };
 
   const clearSelection = () => {
-    setSelectedBooth('');
-    setSelectedBooths([]);
+    commitSelection([], '');
+  };
+
+  const undoSelection = () => {
+    if (!canUndo) return;
+
+    const previousState = undoStack[undoStack.length - 1];
+    const currentState = { selectedBooth, selectedBooths };
+
+    setUndoStack((current) => current.slice(0, -1));
+    setRedoStack((current) => [...current, currentState]);
+    setSelectedBooth(previousState.selectedBooth);
+    setSelectedBooths(previousState.selectedBooths);
+  };
+
+  const redoSelection = () => {
+    if (!canRedo) return;
+
+    const nextState = redoStack[redoStack.length - 1];
+    const currentState = { selectedBooth, selectedBooths };
+
+    setRedoStack((current) => current.slice(0, -1));
+    setUndoStack((current) => [...current, currentState]);
+    setSelectedBooth(nextState.selectedBooth);
+    setSelectedBooths(nextState.selectedBooths);
   };
 
   const handleSavePlan = () => {
@@ -316,6 +360,48 @@ export default function Booths() {
             fontSize: '12px',
           }}>
             <span>{selectedCount} selected</span>
+            <button
+              type="button"
+              onClick={undoSelection}
+              disabled={!canUndo}
+              aria-label="Undo selection"
+              title="Undo selection"
+              style={{
+                width: '32px',
+                height: '32px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid #E5E7EB',
+                background: 'white',
+                color: canUndo ? '#374151' : '#D1D5DB',
+                borderRadius: '8px',
+                cursor: canUndo ? 'pointer' : 'not-allowed',
+              }}
+            >
+              <Undo2 size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={redoSelection}
+              disabled={!canRedo}
+              aria-label="Redo selection"
+              title="Redo selection"
+              style={{
+                width: '32px',
+                height: '32px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid #E5E7EB',
+                background: 'white',
+                color: canRedo ? '#374151' : '#D1D5DB',
+                borderRadius: '8px',
+                cursor: canRedo ? 'pointer' : 'not-allowed',
+              }}
+            >
+              <Redo2 size={14} />
+            </button>
             {selectedCount > 0 && (
               <button
                 type="button"
