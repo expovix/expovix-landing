@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import TopBar from '../components/dashboard/TopBar';
-import { Check, Loader2 } from 'lucide-react';
+import { Check, CheckCircle2, CircleDot, Clock3, Loader2, X } from 'lucide-react';
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
 } from 'recharts';
@@ -25,9 +25,9 @@ const BOOTHS = [
 const EVENTS = ['All Events', 'Tech Expo 2024', 'Health & Wellness Summit', 'Global Logistics Summit'];
 
 const STATUS_COLORS = {
-  Available: { background: '#DCFCE7', color: '#16A34A' },
-  Booked:    { background: '#FFF7ED', color: '#EA580C' },
-  Reserved:  { background: '#DBEAFE', color: '#1D4ED8' },
+  Available: { background: '#DCFCE7', border: '#BBF7D0', color: '#15803D', icon: CircleDot },
+  Booked:    { background: '#FFF7ED', border: '#FED7AA', color: '#C2410C', icon: CheckCircle2 },
+  Reserved:  { background: '#EEF2FF', border: '#C7D2FE', color: '#4F46E5', icon: Clock3 },
 };
 
 const thStyle = {
@@ -50,6 +50,65 @@ function DonutCenterLabel({ cx, cy, total }) {
   );
 }
 
+function BoothStatusBadge({ status }) {
+  const config = STATUS_COLORS[status];
+  const Icon = config.icon;
+
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '5px',
+      background: config.background,
+      border: `1px solid ${config.border}`,
+      color: config.color,
+      fontSize: '11px',
+      fontWeight: '700',
+      padding: '4px 9px',
+      borderRadius: '999px',
+      lineHeight: 1,
+      whiteSpace: 'nowrap',
+    }}>
+      <Icon size={12} strokeWidth={2.4} />
+      {status}
+    </span>
+  );
+}
+
+function BoothTooltip({ booth, position, shouldReduce }) {
+  return (
+    <motion.div
+      initial={shouldReduce ? false : { opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 6 }}
+      transition={{ duration: 0.18, ease: 'easeOut' }}
+      style={{
+        position: 'fixed',
+        left: position.x + 14,
+        top: position.y + 14,
+        zIndex: 30,
+        width: '220px',
+        background: '#111827',
+        color: 'white',
+        borderRadius: '10px',
+        padding: '10px 12px',
+        boxShadow: '0 12px 28px rgba(17,24,39,0.18)',
+        pointerEvents: 'none',
+      }}
+    >
+      <div style={{ fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>
+        Booth {booth.number}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px 10px', fontSize: '11px', color: 'rgba(255,255,255,0.72)' }}>
+        <span>{booth.type}</span>
+        <span>{booth.size} sqm</span>
+        <span>{booth.price}</span>
+        <span>{booth.status}</span>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Booths() {
   const navigate = useNavigate();
   const shouldReduce = useReducedMotion();
@@ -57,6 +116,8 @@ export default function Booths() {
   const [search, setSearch] = useState('');
   const [eventFilter, setEventFilter] = useState('All Events');
   const [selectedBooth, setSelectedBooth] = useState('');
+  const [hoveredBooth, setHoveredBooth] = useState('');
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [saveStatus, setSaveStatus] = useState('idle');
 
   useEffect(() => {
@@ -94,6 +155,9 @@ export default function Booths() {
     const matchEvent  = eventFilter === 'All Events' || b.event === eventFilter;
     return matchSearch && matchEvent;
   });
+
+  const selectedBoothData = BOOTHS.find((booth) => booth.number === selectedBooth);
+  const hoveredBoothData = BOOTHS.find((booth) => booth.number === hoveredBooth);
 
   const handleSavePlan = () => {
     if (saveStatus === 'saving') return;
@@ -215,6 +279,75 @@ export default function Booths() {
           </select>
         </div>
 
+        <AnimatePresence initial={false}>
+          {selectedBoothData && (
+            <motion.aside
+              key={selectedBoothData.number}
+              initial={shouldReduce ? { opacity: 0 } : { opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={shouldReduce ? { opacity: 0 } : { opacity: 0, x: 24 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              style={{
+                background: 'white',
+                border: '1px solid #F3F4F6',
+                borderRadius: '12px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                padding: '16px',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '16px',
+                flexWrap: 'wrap',
+              }}
+            >
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <h2 style={{ fontSize: '15px', fontWeight: '700', color: '#111827', margin: 0 }}>
+                    Booth {selectedBoothData.number}
+                  </h2>
+                  <BoothStatusBadge status={selectedBoothData.status} />
+                </div>
+                <div style={{ display: 'flex', gap: '18px', flexWrap: 'wrap', fontSize: '12px', color: '#6B7280' }}>
+                  <span>{selectedBoothData.type}</span>
+                  <span>{selectedBoothData.size} sqm</span>
+                  <span>{selectedBoothData.price}</span>
+                  <span>{selectedBoothData.event}</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedBooth('')}
+                aria-label="Close booth details"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  color: '#6B7280',
+                  background: 'white',
+                  cursor: 'pointer',
+                }}
+              >
+                <X size={15} />
+              </button>
+            </motion.aside>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {hoveredBoothData && (
+            <BoothTooltip
+              booth={hoveredBoothData}
+              position={tooltipPosition}
+              shouldReduce={shouldReduce}
+            />
+          )}
+        </AnimatePresence>
+
         {/* Table */}
         <div style={{ background: 'white', border: '1px solid #F3F4F6', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
           <div style={{ overflowX: 'auto' }}>
@@ -245,19 +378,19 @@ export default function Booths() {
                       boxShadow: isSelected ? 'inset 0 0 0 1px rgba(255,95,41,0.35)' : 'none',
                     }}
                     onClick={() => setSelectedBooth(row.number)}
+                    onMouseEnter={(event) => {
+                      setHoveredBooth(row.number);
+                      setTooltipPosition({ x: event.clientX, y: event.clientY });
+                    }}
+                    onMouseMove={(event) => setTooltipPosition({ x: event.clientX, y: event.clientY })}
+                    onMouseLeave={() => setHoveredBooth('')}
                     aria-selected={isSelected}
                   >
                     <td style={{ ...tdStyle, fontWeight: '600', color: '#111827' }}>{row.number}</td>
                     <td style={tdStyle}>{row.size}</td>
                     <td style={tdStyle}>{row.type}</td>
                     <td style={tdStyle}>
-                      <span style={{
-                        ...STATUS_COLORS[row.status],
-                        fontSize: '11px', fontWeight: '600',
-                        padding: '3px 10px', borderRadius: '20px', display: 'inline-block',
-                      }}>
-                        {row.status}
-                      </span>
+                      <BoothStatusBadge status={row.status} />
                     </td>
                     <td style={{ ...tdStyle, fontWeight: '500' }}>{row.price}</td>
                     <td style={{ ...tdStyle, color: '#9CA3AF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>{row.event}</td>
