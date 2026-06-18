@@ -36,7 +36,7 @@ function useCountUp(target, duration = 1200, enabled = true) {
 }
 
 function KpiCard({ card, index, shouldReduce }) {
-  const count = useCountUp(card.numeric, 1200, !shouldReduce);
+  const count = useCountUp(card.numeric, 600, !shouldReduce);
   const displayValue = shouldReduce
     ? card.value
     : `${card.prefix}${count}${card.suffix}`;
@@ -46,14 +46,13 @@ function KpiCard({ card, index, shouldReduce }) {
   return (
     <motion.div
       className="bg-white border border-outline-variant p-4 flex flex-col rounded-xl shadow-sm"
-      initial={shouldReduce ? false : { opacity: 0, y: 20 }}
+      initial={shouldReduce ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: 'easeOut', delay: index * 0.1 }}
+      transition={{ duration: 0.2, ease: 'easeOut', delay: index * 0.03 }}
       whileHover={shouldReduce ? {} : {
-        scale: 1.02,
-        y: -3,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-        transition: { duration: 0.2 },
+        y: -2,
+        boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+        transition: { duration: 0.18, ease: 'easeOut' },
       }}
     >
       <p className="text-[11px] font-semibold text-secondary uppercase tracking-wide mb-2">{card.label}</p>
